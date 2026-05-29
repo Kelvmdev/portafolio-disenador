@@ -1,17 +1,28 @@
 ---
-
+import Layout from '../layouts/Layout.astro';
+import TarjetaTrabajo from '../components/TarjetaTrabajo.astro';
+import { sitio, trabajos } from '../config';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout titulo={sitio.nombre}>
+  <header class="text-center py-24 px-6">
+    <p class="text-sm font-semibold tracking-widest uppercase text-indigo-600 mb-4">Portafolio</p>
+    <h1 class="text-5xl md:text-7xl font-extrabold text-gray-900 leading-tight">{sitio.nombre}</h1>
+    <p class="text-lg md:text-xl text-gray-500 mt-4 max-w-xl mx-auto">{sitio.tagline}</p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+      <a href="#trabajos" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-8 py-3 rounded-lg transition">
+        Ver trabajos
+      </a>
+      <a href="#contacto" class="bg-white hover:bg-gray-100 text-gray-900 font-semibold px-8 py-3 rounded-lg border border-gray-200 transition">
+        Contáctame
+      </a>
+    </div>
+  </header>
+
+  <section id="trabajos" class="max-w-6xl mx-auto px-6 pb-24">
+    <h2 class="text-3xl font-bold text-gray-900 text-center mb-12">Trabajos seleccionados</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {trabajos.map((t) => <TarjetaTrabajo {...t} />)}
+    </div>
+  </section>
+</Layout>

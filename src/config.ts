@@ -1,0 +1,21 @@
+// Contenido del sitio — un solo lugar para editarlo todo.
+// (Esta es la base sobre la que se construirá el CMS más adelante.)
+
+export const sitio = {
+  nombre: "Laura Gómez",
+  tagline: "Diseño gráfico para redes sociales",
+  redes: {
+    instagram: "#",
+    behance: "#",
+    email: "correo@ejemplo.com",
+  },
+};
+
+export const trabajos = [
+  { nombre: "Campaña Verano",       titulo: "Post para Instagram",   imagen: "https://placehold.co/600x400/4f46e5/ffffff?text=Trabajo+1" },
+  { nombre: "Identidad de Marca",   titulo: "Diseño de logo",        imagen: "https://placehold.co/600x400/db2777/ffffff?text=Trabajo+2" },
+  { nombre: "Promo Black Friday",   titulo: "Historia de Instagram", imagen: "https://placehold.co/600x400/d97706/ffffff?text=Trabajo+3" },
+  { nombre: "Lanzamiento Producto", titulo: "Carrusel",              imagen: "https://placehold.co/600x400/059669/ffffff?text=Trabajo+4" },
+  { nombre: "Evento de Música",     titulo: "Flyer digital",         imagen: "https://placehold.co/600x400/0284c7/ffffff?text=Trabajo+5" },
+  { nombre: "Reel Tutorial",        titulo: "Portada de video",      imagen: "https://placehold.co/600x400/7c3aed/ffffff?text=Trabajo+6" },
+];
