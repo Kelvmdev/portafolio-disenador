@@ -34,14 +34,20 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
   contenido.sitio.nombre = datos.get("nombre")?.toString() ?? "";
   contenido.sitio.tagline = datos.get("tagline")?.toString() ?? "";
 
-  // 5. Reconstruir los trabajos DESDE CERO según cuántos llegaron (campo "total")
+  // 5. Reconstruir los trabajos; las imágenes vienen como texto JSON por trabajo
   const total = Number(datos.get("total") ?? 0);
   const nuevosTrabajos = [];
   for (let i = 0; i < total; i++) {
+    let imagenes: string[] = [];
+    try {
+      imagenes = JSON.parse(datos.get(`imagenes_${i}`)?.toString() ?? "[]");
+    } catch {
+      imagenes = [];
+    }
     nuevosTrabajos.push({
       nombre: datos.get(`nombre_${i}`)?.toString() ?? "",
       titulo: datos.get(`titulo_${i}`)?.toString() ?? "",
-      imagen: datos.get(`imagen_${i}`)?.toString() ?? "",
+      imagenes,
     });
   }
   contenido.trabajos = nuevosTrabajos;
