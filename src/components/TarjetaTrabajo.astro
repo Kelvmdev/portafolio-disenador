@@ -14,9 +14,10 @@ const resto = fotos.slice(1);
     <h3 class="text-lg font-bold text-gray-900">{nombre}</h3>
     <p class="text-sm text-gray-500 mt-1">{titulo}</p>
     {resto.length > 0 && (
-      <div class="flex gap-2 mt-4">
+      <div class="flex gap-2 mt-4 overflow-x-auto pb-1">
         {resto.map((url: string) => (
-          <img src={url} alt={nombre} class="w-16 h-16 object-cover rounded-lg" />
+          <img src={url} alt={nombre} loading="lazy"
+            class="w-16 h-16 object-cover rounded-lg shrink-0" />
         ))}
       </div>
     )}
