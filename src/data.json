@@ -38,6 +38,11 @@
       "nombre": "Reels",
       "titulo": "Portada de video",
       "imagen": "https://placehold.co/600x400/7c3aed/ffffff?text=Trabajo+6"
+    },
+    {
+      "nombre": "Tarde",
+      "titulo": "Fotos hobbie",
+      "imagen": "https://unsplash.com/es/s/fotos/-tarde"
     }
   ]
 }
