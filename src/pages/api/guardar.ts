@@ -17,8 +17,6 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
 
   // 2. Datos del formulario
   const datos = await request.formData();
-  const nombre = datos.get("nombre")?.toString() ?? "";
-  const tagline = datos.get("tagline")?.toString() ?? "";
 
   const headers = {
     Authorization: `Bearer ${TOKEN}`,
@@ -27,18 +25,25 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
   };
   const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${ARCHIVO}`;
 
-  // 3. Traer el data.json actual de GitHub (necesitamos su "sha")
+  // 3. Traer el data.json actual de GitHub
   const respGet = await fetch(`${url}?ref=${BRANCH}`, { headers });
   const archivo = await respGet.json();
   const contenido = JSON.parse(Buffer.from(archivo.content, "base64").toString("utf-8"));
 
-  // 4. Cambiar los campos
-  contenido.sitio.nombre = nombre;
-  contenido.sitio.tagline = tagline;
+  // 4. Actualizar el sitio
+  contenido.sitio.nombre = datos.get("nombre")?.toString() ?? "";
+  contenido.sitio.tagline = datos.get("tagline")?.toString() ?? "";
 
-  // 5. Hacer commit del nuevo data.json
+  // 5. Reconstruir los trabajos (campos indexados: nombre_0, titulo_0, imagen_0, ...)
+  contenido.trabajos = contenido.trabajos.map((t, i) => ({
+    nombre: datos.get(`nombre_${i}`)?.toString() ?? t.nombre,
+    titulo: datos.get(`titulo_${i}`)?.toString() ?? t.titulo,
+    imagen: datos.get(`imagen_${i}`)?.toString() ?? t.imagen,
+  }));
+
+  // 6. Hacer commit del nuevo data.json
   const nuevo = Buffer.from(JSON.stringify(contenido, null, 2), "utf-8").toString("base64");
-  const respPut = await fetch(url, {
+  await fetch(url, {
     method: "PUT",
     headers,
     body: JSON.stringify({
@@ -48,8 +53,6 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
       branch: BRANCH,
     }),
   });
-
-  console.log("GitHub → GET:", respGet.status, "| PUT:", respPut.status);
 
   return redirect("/admin?guardado=1");
 };
