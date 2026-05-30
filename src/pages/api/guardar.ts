@@ -27,19 +27,24 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
 
   // 3. Traer el data.json actual de GitHub
   const respGet = await fetch(`${url}?ref=${BRANCH}`, { headers });
-  const archivo = await respGet.json();
+  const archivo = await respGet.json() as { content: string; sha: string };
   const contenido = JSON.parse(Buffer.from(archivo.content, "base64").toString("utf-8"));
 
   // 4. Actualizar el sitio
   contenido.sitio.nombre = datos.get("nombre")?.toString() ?? "";
   contenido.sitio.tagline = datos.get("tagline")?.toString() ?? "";
 
-  // 5. Reconstruir los trabajos (campos indexados: nombre_0, titulo_0, imagen_0, ...)
-  contenido.trabajos = contenido.trabajos.map((t, i) => ({
-    nombre: datos.get(`nombre_${i}`)?.toString() ?? t.nombre,
-    titulo: datos.get(`titulo_${i}`)?.toString() ?? t.titulo,
-    imagen: datos.get(`imagen_${i}`)?.toString() ?? t.imagen,
-  }));
+  // 5. Reconstruir los trabajos DESDE CERO según cuántos llegaron (campo "total")
+  const total = Number(datos.get("total") ?? 0);
+  const nuevosTrabajos = [];
+  for (let i = 0; i < total; i++) {
+    nuevosTrabajos.push({
+      nombre: datos.get(`nombre_${i}`)?.toString() ?? "",
+      titulo: datos.get(`titulo_${i}`)?.toString() ?? "",
+      imagen: datos.get(`imagen_${i}`)?.toString() ?? "",
+    });
+  }
+  contenido.trabajos = nuevosTrabajos;
 
   // 6. Hacer commit del nuevo data.json
   const nuevo = Buffer.from(JSON.stringify(contenido, null, 2), "utf-8").toString("base64");
