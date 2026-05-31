@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import TarjetaTrabajo from '../components/TarjetaTrabajo.astro';
 import { sitio, trabajos } from '../config';
+import Lightbox from '../components/Lightbox.astro';
 ---
 
 <Layout titulo={sitio.nombre}>
@@ -25,4 +26,5 @@ import { sitio, trabajos } from '../config';
       {trabajos.map((t) => <TarjetaTrabajo {...t} />)}
     </div>
   </section>
+  <Lightbox />
 </Layout>

@@ -6,6 +6,7 @@ import { sitio } from '../config';
 
 const { titulo = sitio.nombre } = Astro.props;
 const descripcion = `Portafolio de ${sitio.nombre} — ${sitio.tagline}.`;
+const imagenOG = `https://placehold.co/1200x630/7c6dfa/ffffff?text=${encodeURIComponent(sitio.nombre)}`;
 ---
 
 <html lang="es">
@@ -17,9 +18,19 @@ const descripcion = `Portafolio de ${sitio.nombre} — ${sitio.tagline}.`;
 
     <title>{titulo}</title>
     <meta name="description" content={descripcion} />
+
+    <!-- Open Graph (WhatsApp, Facebook, Instagram) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={sitio.nombre} />
     <meta property="og:title" content={titulo} />
     <meta property="og:description" content={descripcion} />
-    <meta property="og:type" content="website" />
+    <meta property="og:image" content={imagenOG} />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={titulo} />
+    <meta name="twitter:description" content={descripcion} />
+    <meta name="twitter:image" content={imagenOG} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

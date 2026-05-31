@@ -1,0 +1,85 @@
+---
+// Visor de imágenes a pantalla completa.
+// Se abre al hacer clic en cualquier elemento con [data-galeria],
+// leyendo sus fotos del atributo data-fotos (un JSON con la lista de URLs).
+---
+
+<div
+  id="lightbox"
+  class="fixed inset-0 z-50 hidden items-center justify-center bg-black/90 p-4"
+>
+  <button data-cerrar aria-label="Cerrar"
+    class="absolute top-4 right-4 text-white text-4xl leading-none hover:opacity-70">&times;</button>
+
+  <button data-prev aria-label="Anterior"
+    class="absolute left-4 text-white text-5xl leading-none hover:opacity-70">&#8249;</button>
+
+  <img data-img src="" alt="Imagen ampliada"
+    class="max-h-[90vh] max-w-[90vw] object-contain rounded-lg" />
+
+  <button data-next aria-label="Siguiente"
+    class="absolute right-4 text-white text-5xl leading-none hover:opacity-70">&#8250;</button>
+
+  <span data-contador
+    class="absolute bottom-4 text-white text-sm bg-black/50 px-3 py-1 rounded-full"></span>
+</div>
+
+<script>
+  const lightbox = document.getElementById('lightbox')!;
+  const imgEl = lightbox.querySelector('[data-img]') as HTMLImageElement;
+  const contador = lightbox.querySelector('[data-contador]')!;
+
+  let fotos: string[] = [];
+  let indice = 0;
+
+  function mostrar() {
+    imgEl.src = fotos[indice];
+    contador.textContent = `${indice + 1} / ${fotos.length}`;
+  }
+
+  function abrir(lista: string[], inicio = 0) {
+    fotos = lista;
+    indice = inicio;
+    mostrar();
+    lightbox.classList.remove('hidden');
+    lightbox.classList.add('flex');
+  }
+
+  function cerrar() {
+    lightbox.classList.add('hidden');
+    lightbox.classList.remove('flex');
+  }
+
+  // El % (módulo) hace que al pasar la última vuelva a la primera, y viceversa.
+  function siguiente() { indice = (indice + 1) % fotos.length; mostrar(); }
+  function anterior() { indice = (indice - 1 + fotos.length) % fotos.length; mostrar(); }
+
+  // Cada tarjeta con data-galeria abre el visor con sus fotos.
+  document.querySelectorAll('[data-galeria]').forEach((el) => {
+    el.addEventListener('click', (e) => {
+      try {
+        const lista = JSON.parse(el.getAttribute('data-fotos') ?? '[]') as string[];
+        if (lista.length === 0) return;
+        const target = e.target as HTMLElement;
+        const attr = target.getAttribute('data-indice');
+        const inicio = attr !== null ? parseInt(attr, 10) : 0;
+        abrir(lista, inicio);
+      } catch { /* nada */ }
+    });
+  });
+
+  lightbox.querySelector('[data-cerrar]')!.addEventListener('click', cerrar);
+  lightbox.querySelector('[data-next]')!.addEventListener('click', siguiente);
+  lightbox.querySelector('[data-prev]')!.addEventListener('click', anterior);
+
+  // Clic en el fondo negro (no en la imagen) cierra.
+  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) cerrar(); });
+
+  // Teclado: Esc cierra, flechas navegan.
+  document.addEventListener('keydown', (e) => {
+    if (lightbox.classList.contains('hidden')) return;
+    if (e.key === 'Escape') cerrar();
+    if (e.key === 'ArrowRight') siguiente();
+    if (e.key === 'ArrowLeft') anterior();
+  });
+</script>

@@ -5,9 +5,12 @@ const portada = fotos[0];
 const resto = fotos.slice(1);
 ---
 
-<div class="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1 transition duration-300">
+<div
+  data-galeria
+  data-fotos={JSON.stringify(fotos)}
+  class="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1 transition duration-300 cursor-pointer">
   {portada && (
-    <img src={portada} alt={nombre}
+    <img src={portada} alt={nombre} data-indice="0"
       class="w-full h-56 object-cover group-hover:scale-105 transition duration-300" />
   )}
   <div class="p-5">
@@ -15,8 +18,8 @@ const resto = fotos.slice(1);
     <p class="text-sm text-gray-500 mt-1">{titulo}</p>
     {resto.length > 0 && (
       <div class="flex gap-2 mt-4 overflow-x-auto pb-1">
-        {resto.map((url: string) => (
-          <img src={url} alt={nombre} loading="lazy"
+        {resto.map((url: string, i: number) => (
+          <img src={url} alt={nombre} loading="lazy" data-indice={i + 1}
             class="w-16 h-16 object-cover rounded-lg shrink-0" />
         ))}
       </div>
