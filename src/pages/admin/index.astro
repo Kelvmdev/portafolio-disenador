@@ -7,6 +7,7 @@ const sesion = Astro.cookies.get("sesion")?.value;
 const autenticado = sesion === "ok";
 const error = Astro.url.searchParams.has("error");
 const guardado = Astro.url.searchParams.has("guardado");
+const errorGuardar = Astro.url.searchParams.has("error_guardar");
 ---
 
 <html lang="es">
@@ -24,6 +25,7 @@ const guardado = Astro.url.searchParams.has("guardado");
         </div>
         <p class="text-gray-500 text-sm mb-6">Edita la información de tu sitio.</p>
         {guardado && <p class="bg-green-50 text-green-700 text-sm rounded-lg px-3 py-2 mb-6">✅ Guardado con éxito.</p>}
+        {errorGuardar && <p class="bg-red-50 text-red-600 text-sm rounded-lg px-3 py-2 mb-6">⚠️ No se pudo guardar. Revisa tu conexión e intenta de nuevo.</p>}
 
         <form method="POST" action="/api/guardar" class="space-y-6">
           <div>
