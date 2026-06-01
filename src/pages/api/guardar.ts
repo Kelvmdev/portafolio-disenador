@@ -11,7 +11,7 @@ const ARCHIVO = "src/data.json";
 export const POST: APIRoute = async ({ request, cookies, redirect }) => {
   // 1. Proteger con la cookie
   const sesion = cookies.get("sesion")?.value;
-  if (sesion !== import.meta.env.ADMIN_PASSWORD) {
+  if (sesion !== "ok") {
     return redirect("/admin");
   }
 

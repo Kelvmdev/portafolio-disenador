@@ -9,7 +9,7 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
   
 
   if (clave === import.meta.env.ADMIN_PASSWORD) {
-    cookies.set("sesion", import.meta.env.ADMIN_PASSWORD, {
+   cookies.set("sesion", "ok", {
       httpOnly: true,
       path: "/",
       maxAge: 60 * 60 * 8,

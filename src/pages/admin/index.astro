@@ -4,7 +4,7 @@ import '../../styles/global.css';
 import { sitio, trabajos } from '../../config';
 
 const sesion = Astro.cookies.get("sesion")?.value;
-const autenticado = sesion === import.meta.env.ADMIN_PASSWORD;
+const autenticado = sesion === "ok";
 const error = Astro.url.searchParams.has("error");
 const guardado = Astro.url.searchParams.has("guardado");
 ---
