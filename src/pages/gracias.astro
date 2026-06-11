@@ -1,0 +1,18 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Boton from '../components/Boton.astro';
+import { sitio } from '../config';
+---
+
+<Layout titulo={`Gracias — ${sitio.nombre}`}>
+  <section class="max-w-2xl mx-auto px-6 py-28 sm:py-36 text-center">
+    <p class="text-xs sm:text-sm font-medium uppercase tracking-[0.2em] text-coral-deep">
+      Mensaje enviado
+    </p>
+    <h1 class="mt-4 font-display text-5xl sm:text-6xl text-tinta">¡Gracias!</h1>
+    <p class="mt-5 text-lg text-tinta-suave">Recibí tu mensaje, te respondo pronto.</p>
+    <div class="mt-8 flex justify-center">
+      <Boton href="/">Volver al inicio</Boton>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,115 @@
+---
+import { sitio } from '../config';
+import Boton from './Boton.astro';
+
+const { contacto, redes, formspree } = sitio;
+// Normaliza el endpoint (el JSON guarda "formspree.io/f/XXXX").
+const endpoint = formspree.startsWith('http') ? formspree : `https://${formspree}`;
+
+const campoClase =
+  'w-full rounded-lg border border-linea bg-hueso px-4 py-3 text-tinta placeholder:text-tenue';
+const labelClase = 'block text-sm font-medium text-tinta mb-1';
+---
+
+<section id="contacto" class="max-w-6xl mx-auto px-6 py-20 sm:py-24">
+  <div class="grid gap-10 md:grid-cols-2 lg:gap-16">
+    <!-- Izquierda: título + texto + contactos (del JSON) -->
+    <div>
+      <h2 class="font-display text-3xl sm:text-4xl text-tinta">{contacto.titulo}</h2>
+      <p class="mt-5 max-w-md text-lg leading-relaxed text-tinta-suave">{contacto.texto}</p>
+
+      <div class="mt-8 space-y-3">
+        <a href={`mailto:${redes.email}`} class="block text-coral-deep hover:underline">{redes.email}</a>
+        <div class="flex gap-5">
+          <a href={redes.instagram} class="text-coral-deep hover:underline">Instagram</a>
+          <a href={redes.behance} class="text-coral-deep hover:underline">Behance</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Derecha: formulario -->
+    <form
+      id="form-contacto"
+      data-endpoint={endpoint}
+      class="rounded-2xl border border-linea bg-crema p-6 sm:p-8"
+      novalidate
+    >
+      <div>
+        <label for="nombre" class={labelClase}>Nombre</label>
+        <input id="nombre" name="nombre" type="text" required autocomplete="name"
+          placeholder="Tu nombre" class={campoClase} />
+      </div>
+
+      <div class="mt-4">
+        <label for="email" class={labelClase}>Correo</label>
+        <input id="email" name="email" type="email" required autocomplete="email"
+          placeholder="tu@correo.com" class={campoClase} />
+      </div>
+
+      <div class="mt-4">
+        <label for="mensaje" class={labelClase}>Mensaje</label>
+        <textarea id="mensaje" name="mensaje" required rows="5" autocomplete="off"
+          placeholder="Cuéntame sobre tu proyecto…" class={`${campoClase} resize-y`}></textarea>
+      </div>
+
+      <div class="mt-6">
+        <Boton type="submit" id="btn-enviar" class="w-full sm:w-auto">
+          <svg data-spinner hidden class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="3" opacity="0.25" />
+            <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+          </svg>
+          <span data-label>Enviar mensaje</span>
+        </Boton>
+      </div>
+
+      <p data-status role="status" aria-live="polite" class="mt-3 min-h-5 text-sm"></p>
+    </form>
+  </div>
+</section>
+
+<script>
+  const form = document.getElementById('form-contacto') as HTMLFormElement | null;
+  if (form) {
+    const endpoint = form.dataset.endpoint!;
+    const status = form.querySelector('[data-status]') as HTMLElement;
+    const btn = form.querySelector('#btn-enviar') as HTMLButtonElement;
+    const label = btn.querySelector('[data-label]') as HTMLElement;
+    const spinner = btn.querySelector('[data-spinner]') as HTMLElement;
+
+    type Modo = 'idle' | 'enviando' | 'error' | 'exito';
+
+    function setEstado(modo: Modo, mensaje = '') {
+      const enviando = modo === 'enviando';
+      btn.disabled = enviando || modo === 'exito';
+      spinner.hidden = !enviando;
+      label.textContent = enviando ? 'Enviando…' : modo === 'exito' ? 'Enviado' : 'Enviar mensaje';
+      status.textContent = mensaje;
+      status.className = `mt-3 min-h-5 text-sm ${modo === 'error' ? 'text-coral-deep' : 'text-tinta-suave'}`;
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!form.checkValidity()) {
+        form.reportValidity(); // muestra la validación nativa
+        return;
+      }
+      setEstado('enviando', 'Enviando tu mensaje…');
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: new FormData(form),
+        });
+        if (res.ok) {
+          setEstado('exito', '¡Enviado!');
+          form.reset();
+          window.location.href = '/gracias';
+        } else {
+          setEstado('error', 'No se pudo enviar. Revisa los datos e intenta de nuevo.');
+        }
+      } catch {
+        setEstado('error', 'Error de conexión. Revisa tu internet e intenta de nuevo.');
+      }
+    });
+  }
+</script>

@@ -22,6 +22,11 @@
       "foto": ""
     },
     "serviciosTitulo": "Servicios",
+    "contacto": {
+      "titulo": "Hablemos",
+      "texto": "¿Tu marca necesita destacar en redes? Cuéntame tu proyecto y te respondo pronto."
+    },
+    "formspree": "formspree.io/f/mjgdowvy",
     "redes": {
       "instagram": "https://instagram.com/laura.disena",
       "behance": "https://behance.net/lauragomez",
