@@ -35,11 +35,3 @@ export const servicios = (data.servicios ?? []) as Servicio[];
 export const piezas: Pieza[] = (data.trabajos as Pieza[])
   .slice()
   .sort((a, b) => a.orden - b.orden);
-
-// Compat TEMPORAL con el panel /admin viejo (lee nombre/titulo/imagenes).
-// Se elimina en la Tanda 5, cuando el panel se reconstruye al shape nuevo.
-export const trabajos = piezas.map((p) => ({
-  nombre: p.titulo,
-  titulo: p.categoria,
-  imagenes: [p.imagen, ...p.galeria].filter((u) => Boolean(u) && u.startsWith('http')),
-}));

@@ -14,7 +14,17 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
     return redirect("/admin");
   }
 
-  const datos = await request.formData();
+  // 2. Leer el payload del panel (JSON con sitio + servicios + trabajos)
+  const form = await request.formData();
+  let p: any;
+  try {
+    p = JSON.parse(form.get("payload")?.toString() ?? "");
+  } catch {
+    return redirect("/admin?error_guardar=1");
+  }
+  if (!p || typeof p !== "object") {
+    return redirect("/admin?error_guardar=1");
+  }
 
   const headers = {
     Authorization: `Bearer ${TOKEN}`,
@@ -24,38 +34,32 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
   const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${ARCHIVO}`;
 
   try {
-    // 2. Traer el data.json actual — y VERIFICAR que respondió bien
+    // 3. Traer el data.json actual de GitHub (sha + contenido) — y verificar
     const respGet = await fetch(`${url}?ref=${BRANCH}`, { headers });
     if (!respGet.ok) {
       return redirect("/admin?error_guardar=1");
     }
-    const archivo = await respGet.json() as { content: string; sha: string };
-    const contenido = JSON.parse(Buffer.from(archivo.content, "base64").toString("utf-8"));
+    const archivo = (await respGet.json()) as { content: string; sha: string };
+    const remoto = JSON.parse(Buffer.from(archivo.content, "base64").toString("utf-8"));
 
-    // 3. Actualizar el sitio
-    contenido.sitio.nombre = datos.get("nombre")?.toString() ?? "";
-    contenido.sitio.tagline = datos.get("tagline")?.toString() ?? "";
+    // 4. BLINDAJE: partir del remoto y sobreescribir SOLO lo editado, sin
+    //    aplastar los objetos anidados (tagline u otras claves no editadas se
+    //    conservan; titular/sobre/contacto/redes se mezclan en profundidad).
+    const ps = p.sitio ?? {};
+    const data = { ...remoto };
+    data.sitio = {
+      ...remoto.sitio,
+      ...ps,
+      titular: { ...remoto.sitio?.titular, ...ps.titular },
+      sobre: { ...remoto.sitio?.sobre, ...ps.sobre },
+      contacto: { ...remoto.sitio?.contacto, ...ps.contacto },
+      redes: { ...remoto.sitio?.redes, ...ps.redes },
+    };
+    if (Array.isArray(p.servicios)) data.servicios = p.servicios;
+    if (Array.isArray(p.trabajos)) data.trabajos = p.trabajos;
 
-    // 4. Reconstruir los trabajos
-    const total = Number(datos.get("total") ?? 0);
-    const nuevosTrabajos = [];
-    for (let i = 0; i < total; i++) {
-      let imagenes: string[] = [];
-      try {
-        imagenes = JSON.parse(datos.get(`imagenes_${i}`)?.toString() ?? "[]");
-      } catch {
-        imagenes = [];
-      }
-      nuevosTrabajos.push({
-        nombre: datos.get(`nombre_${i}`)?.toString() ?? "",
-        titulo: datos.get(`titulo_${i}`)?.toString() ?? "",
-        imagenes,
-      });
-    }
-    contenido.trabajos = nuevosTrabajos;
-
-    // 5. Commit del nuevo data.json — y VERIFICAR que se guardó
-    const nuevo = Buffer.from(JSON.stringify(contenido, null, 2), "utf-8").toString("base64");
+    // 5. Commit del nuevo data.json (Contents API: un PUT = un commit) — y verificar
+    const nuevo = Buffer.from(JSON.stringify(data, null, 2), "utf-8").toString("base64");
     const respPut = await fetch(url, {
       method: "PUT",
       headers,

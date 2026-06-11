@@ -1,235 +1,428 @@
 ---
 export const prerender = false;
 import '../../styles/global.css';
-import { sitio, trabajos } from '../../config';
+import datos from '../../data.json';
 
-const sesion = Astro.cookies.get("sesion")?.value;
-const autenticado = sesion === "ok";
-const error = Astro.url.searchParams.has("error");
-const guardado = Astro.url.searchParams.has("guardado");
-const errorGuardar = Astro.url.searchParams.has("error_guardar");
+const sesion = Astro.cookies.get('sesion')?.value;
+const autenticado = sesion === 'ok';
+const error = Astro.url.searchParams.has('error');
+const guardado = Astro.url.searchParams.has('guardado');
+const errorGuardar = Astro.url.searchParams.has('error_guardar');
+
+const s = datos.sitio;
+const inp = 'w-full rounded-lg border border-linea bg-hueso px-3 py-2 text-tinta';
+const lbl = 'block text-sm font-medium text-tinta mb-1';
+const card = 'rounded-2xl border border-linea bg-crema p-5 space-y-4';
+const leyenda = 'font-display text-lg text-tinta';
+
+// Para inyectar el estado inicial sin riesgo de cerrar el <script>.
+const estadoInicial = JSON.stringify(datos).replace(/</g, '\\u003c');
 ---
 
 <html lang="es">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Panel</title>
+    <title>Panel · {s.nombre}</title>
   </head>
-  <body class="bg-gray-100 min-h-screen p-6">
+  <body class="min-h-screen p-4 sm:p-6">
     {autenticado ? (
-      <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-8">
-        <div class="flex items-center justify-between mb-1">
-          <h1 class="text-2xl font-bold text-gray-900">Panel de contenido</h1>
-          <a href="/api/logout" class="text-sm text-gray-500 hover:text-gray-700 underline">Cerrar sesión</a>
-        </div>
-        <p class="text-gray-500 text-sm mb-6">Edita la información de tu sitio.</p>
-        {guardado && <p class="bg-green-50 text-green-700 text-sm rounded-lg px-3 py-2 mb-6">✅ Guardado con éxito.</p>}
-        {errorGuardar && <p class="bg-red-50 text-red-600 text-sm rounded-lg px-3 py-2 mb-6">⚠️ No se pudo guardar. Revisa tu conexión e intenta de nuevo.</p>}
+      <div class="max-w-3xl mx-auto">
+        <header class="flex items-center justify-between mb-1">
+          <h1 class="font-display text-3xl text-tinta">Panel de contenido</h1>
+          <a href="/api/logout" class="text-sm text-tinta-suave underline hover:text-coral-deep">Cerrar sesión</a>
+        </header>
+        <p class="text-tinta-suave text-sm mb-6">Edita todo el sitio y pulsa “Guardar todo”.</p>
 
-        <form method="POST" action="/api/guardar" class="space-y-6">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
-            <input type="text" name="nombre" value={sitio.nombre}
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-600" />
+        {guardado && <p class="mb-6 rounded-lg bg-crema border border-linea px-3 py-2 text-sm text-tinta">✅ Guardado. Vercel redesplegará en ~30 s (recarga con Ctrl+Shift+R).</p>}
+        {errorGuardar && <p class="mb-6 rounded-lg border border-coral-deep px-3 py-2 text-sm text-coral-deep">⚠️ No se pudo guardar. Revisa tu conexión e intenta de nuevo.</p>}
+
+        <form method="POST" action="/api/guardar">
+          <input type="hidden" name="payload" id="payload" />
+
+          <!-- Pestañas -->
+          <div role="tablist" aria-label="Secciones" class="flex flex-wrap gap-2 mb-5">
+            <button type="button" role="tab" data-tab="sitio" aria-selected="true" class="rounded-full px-4 py-2 text-sm font-medium aria-selected:bg-tinta aria-selected:text-hueso border border-linea text-tinta">Sitio</button>
+            <button type="button" role="tab" data-tab="trabajos" aria-selected="false" class="rounded-full px-4 py-2 text-sm font-medium aria-selected:bg-tinta aria-selected:text-hueso border border-linea text-tinta">Trabajos</button>
+            <button type="button" role="tab" data-tab="servicios" aria-selected="false" class="rounded-full px-4 py-2 text-sm font-medium aria-selected:bg-tinta aria-selected:text-hueso border border-linea text-tinta">Servicios</button>
           </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Tagline</label>
-            <input type="text" name="tagline" value={sitio.tagline}
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-600" />
-          </div>
 
-          <hr class="border-gray-200" />
-          <h2 class="text-lg font-bold text-gray-900">Trabajos</h2>
-
-          <div id="lista-trabajos" class="space-y-4">
-            {trabajos.map((t, i) => (
-              <div data-trabajo class="border border-gray-200 rounded-xl p-4 space-y-3">
-                <div class="flex justify-between items-center">
-                  <p data-label class="text-xs font-semibold text-gray-400 uppercase">Trabajo {i + 1}</p>
-                  <button type="button" data-borrar class="text-red-600 text-sm hover:underline">🗑️ Borrar trabajo</button>
-                </div>
-                <input type="text" name={`nombre_${i}`} data-nombre value={t.nombre} placeholder="Nombre"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-600" />
-                <input type="text" name={`titulo_${i}`} data-titulo value={t.titulo} placeholder="Título"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-600" />
-
-                <p class="text-xs font-medium text-gray-500">Imágenes</p>
-                <div data-imagenes class="space-y-2 max-h-64 overflow-y-auto pr-1">
-                  {t.imagenes.map((url: string) => (
-                    <div data-img class="flex items-center gap-3">
-                      <img src={url} class="w-16 h-16 object-cover rounded-lg border border-gray-200" />
-                      <button type="button" data-borrar-img class="text-red-600 text-xs hover:underline">Quitar</button>
-                    </div>
-                  ))}
-                </div>
-
-                <input type="file" accept="image/*" multiple data-file
-                  class="w-full text-sm text-gray-600 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-indigo-600 file:text-white file:cursor-pointer hover:file:bg-indigo-700" />
-                <p data-upload-status class="text-xs text-gray-500 min-h-4"></p>
-
-                <input type="hidden" name={`imagenes_${i}`} data-imagenes-json value={JSON.stringify(t.imagenes)} />
+          <!-- ===== PESTAÑA SITIO ===== -->
+          <div role="tabpanel" data-panel="sitio" class="space-y-5">
+            <fieldset class={card}>
+              <legend class={leyenda}>Identidad</legend>
+              <div>
+                <label for="f-nombre" class={lbl}>Nombre</label>
+                <input id="f-nombre" data-path="sitio.nombre" value={s.nombre} autocomplete="off" class={inp} />
               </div>
-            ))}
+              <div>
+                <label for="f-kicker" class={lbl}>Kicker (sobre el titular)</label>
+                <input id="f-kicker" data-path="sitio.kicker" value={s.kicker} autocomplete="off" class={inp} />
+              </div>
+            </fieldset>
+
+            <fieldset class={card}>
+              <legend class={leyenda}>Hero</legend>
+              <div class="grid sm:grid-cols-3 gap-3">
+                <div>
+                  <label for="f-tit-antes" class={lbl}>Titular · antes</label>
+                  <input id="f-tit-antes" data-path="sitio.titular.antes" value={s.titular.antes} autocomplete="off" class={inp} />
+                </div>
+                <div>
+                  <label for="f-tit-dest" class={lbl}>Titular · destacado</label>
+                  <input id="f-tit-dest" data-path="sitio.titular.destacado" value={s.titular.destacado} autocomplete="off" class={inp} />
+                </div>
+                <div>
+                  <label for="f-tit-desp" class={lbl}>Titular · después</label>
+                  <input id="f-tit-desp" data-path="sitio.titular.despues" value={s.titular.despues} autocomplete="off" class={inp} />
+                </div>
+              </div>
+              <div>
+                <label for="f-subtitulo" class={lbl}>Subtítulo</label>
+                <input id="f-subtitulo" data-path="sitio.subtitulo" value={s.subtitulo} autocomplete="off" class={inp} />
+              </div>
+
+              <p class="text-sm font-medium text-tinta">Métricas</p>
+              <div class="space-y-2">
+                {s.metricas.map((m, i) => (
+                  <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 rounded-lg border border-linea p-2">
+                    <label class="text-xs text-tinta-suave">Número
+                      <input type="number" step="any" data-path={`sitio.metricas.${i}.numero`} data-tipo="number" value={m.numero} autocomplete="off" class={inp} />
+                    </label>
+                    <label class="text-xs text-tinta-suave">Prefijo
+                      <input data-path={`sitio.metricas.${i}.prefijo`} value={m.prefijo} autocomplete="off" class={inp} />
+                    </label>
+                    <label class="text-xs text-tinta-suave">Sufijo
+                      <input data-path={`sitio.metricas.${i}.sufijo`} value={m.sufijo} autocomplete="off" class={inp} />
+                    </label>
+                    <label class="text-xs text-tinta-suave">Decimales
+                      <input type="number" step="1" min="0" data-path={`sitio.metricas.${i}.decimales`} data-tipo="number" value={m.decimales} autocomplete="off" class={inp} />
+                    </label>
+                    <label class="text-xs text-tinta-suave col-span-2 sm:col-span-1">Etiqueta
+                      <input data-path={`sitio.metricas.${i}.etiqueta`} value={m.etiqueta} autocomplete="off" class={inp} />
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </fieldset>
+
+            <fieldset class={card}>
+              <legend class={leyenda}>Títulos de sección</legend>
+              <div class="grid sm:grid-cols-3 gap-3">
+                <div>
+                  <label for="f-tt" class={lbl}>Trabajos</label>
+                  <input id="f-tt" data-path="sitio.trabajosTitulo" value={s.trabajosTitulo} autocomplete="off" class={inp} />
+                </div>
+                <div>
+                  <label for="f-st" class={lbl}>Sobre mí</label>
+                  <input id="f-st" data-path="sitio.sobreTitulo" value={s.sobreTitulo} autocomplete="off" class={inp} />
+                </div>
+                <div>
+                  <label for="f-svt" class={lbl}>Servicios</label>
+                  <input id="f-svt" data-path="sitio.serviciosTitulo" value={s.serviciosTitulo} autocomplete="off" class={inp} />
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class={card}>
+              <legend class={leyenda}>Sobre mí</legend>
+              <div>
+                <label for="f-bio" class={lbl}>Bio</label>
+                <textarea id="f-bio" data-path="sitio.sobre.bio" rows="5" autocomplete="off" class={inp}>{s.sobre.bio}</textarea>
+              </div>
+              <div>
+                <label for="f-foto" class={lbl}>Foto</label>
+                <div class="flex items-center gap-3">
+                  <img data-sobre-preview src={s.sobre.foto} alt="Foto de Sobre mí" class={`h-16 w-16 rounded-lg border border-linea object-cover ${s.sobre.foto ? '' : 'hidden'}`} />
+                  <input id="f-foto" type="file" accept="image/*" data-upload="sobre-foto" autocomplete="off" class="text-sm text-tinta-suave" />
+                </div>
+                <p data-sobre-status class="text-xs text-tinta-suave min-h-4"></p>
+              </div>
+            </fieldset>
+
+            <fieldset class={card}>
+              <legend class={leyenda}>Contacto</legend>
+              <div>
+                <label for="f-ct" class={lbl}>Título</label>
+                <input id="f-ct" data-path="sitio.contacto.titulo" value={s.contacto.titulo} autocomplete="off" class={inp} />
+              </div>
+              <div>
+                <label for="f-cx" class={lbl}>Texto</label>
+                <textarea id="f-cx" data-path="sitio.contacto.texto" rows="3" autocomplete="off" class={inp}>{s.contacto.texto}</textarea>
+              </div>
+              <div>
+                <label for="f-fs" class={lbl}>Endpoint de Formspree</label>
+                <input id="f-fs" data-path="sitio.formspree" value={s.formspree} autocomplete="off" class={inp} />
+              </div>
+            </fieldset>
+
+            <fieldset class={card}>
+              <legend class={leyenda}>Redes</legend>
+              <div>
+                <label for="f-ig" class={lbl}>Instagram (URL)</label>
+                <input id="f-ig" type="url" data-path="sitio.redes.instagram" value={s.redes.instagram} autocomplete="off" class={inp} />
+              </div>
+              <div>
+                <label for="f-be" class={lbl}>Behance (URL)</label>
+                <input id="f-be" type="url" data-path="sitio.redes.behance" value={s.redes.behance} autocomplete="off" class={inp} />
+              </div>
+              <div>
+                <label for="f-em" class={lbl}>Email</label>
+                <input id="f-em" type="email" data-path="sitio.redes.email" value={s.redes.email} autocomplete="off" class={inp} />
+              </div>
+            </fieldset>
           </div>
 
-          <button type="button" id="btn-agregar" class="w-full border-2 border-dashed border-indigo-300 text-indigo-600 font-medium py-2.5 rounded-lg hover:bg-indigo-50 transition">
-            ➕ Agregar trabajo
-          </button>
+          <!-- ===== PESTAÑA TRABAJOS ===== -->
+          <div role="tabpanel" data-panel="trabajos" hidden class="space-y-4">
+            <div id="lista-trabajos" class="space-y-4"></div>
+            <button type="button" id="add-trabajo" class="w-full rounded-lg border-2 border-dashed border-linea py-2.5 text-sm font-medium text-coral-deep hover:bg-crema motion-safe:transition active:scale-95">
+              ➕ Agregar trabajo
+            </button>
+          </div>
 
-          <input type="hidden" name="total" id="total" value={trabajos.length} />
+          <!-- ===== PESTAÑA SERVICIOS ===== -->
+          <div role="tabpanel" data-panel="servicios" hidden class="space-y-4">
+            <div id="lista-servicios" class="space-y-4"></div>
+            <button type="button" id="add-servicio" class="w-full rounded-lg border-2 border-dashed border-linea py-2.5 text-sm font-medium text-coral-deep hover:bg-crema motion-safe:transition active:scale-95">
+              ➕ Agregar servicio
+            </button>
+          </div>
 
-          <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-lg transition">
-            Guardar
-          </button>
+          <!-- Guardar -->
+          <div class="sticky bottom-0 mt-6 -mx-4 sm:mx-0 bg-hueso/95 px-4 py-4 sm:px-0">
+            <button type="submit" class="w-full rounded-full bg-coral-deep px-6 py-3 font-medium text-hueso motion-safe:transition motion-safe:duration-150 active:scale-95 hover:shadow-lg">
+              Guardar todo
+            </button>
+          </div>
         </form>
       </div>
     ) : (
       <div class="flex justify-center pt-16">
-        <form method="POST" action="/api/login" class="bg-white rounded-2xl shadow-lg p-8 max-w-sm w-full">
-          <h1 class="text-2xl font-bold text-gray-900 mb-1">Panel</h1>
-          <p class="text-gray-500 text-sm mb-6">Ingresa tu clave para entrar.</p>
-          {error && <p class="bg-red-50 text-red-600 text-sm rounded-lg px-3 py-2 mb-4">Clave incorrecta. Intenta de nuevo.</p>}
-          <input type="password" name="password" placeholder="Tu clave" required
-            class="w-full px-4 py-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-indigo-600" />
-          <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-lg transition">
+        <form method="POST" action="/api/login" autocomplete="on" class="w-full max-w-sm rounded-2xl border border-linea bg-crema p-8">
+          <h1 class="font-display text-3xl text-tinta mb-1">Panel</h1>
+          <p class="text-tinta-suave text-sm mb-6">Ingresa tu clave para entrar.</p>
+          {error && <p class="mb-4 rounded-lg border border-coral-deep px-3 py-2 text-sm text-coral-deep">Clave incorrecta. Intenta de nuevo.</p>}
+          <label for="password" class={lbl}>Clave</label>
+          <input id="password" name="password" type="password" required autocomplete="current-password" placeholder="Tu clave" class={`${inp} mb-4`} />
+          <button type="submit" class="w-full rounded-full bg-coral-deep px-6 py-3 font-medium text-hueso motion-safe:transition motion-safe:duration-150 active:scale-95 hover:shadow-lg">
             Entrar
           </button>
         </form>
       </div>
     )}
-    <script>
-      const lista = document.getElementById('lista-trabajos') as HTMLElement;
 
-      if (lista) {
-        const totalInput = document.getElementById('total') as HTMLInputElement;
-        const btnAgregar = document.getElementById('btn-agregar') as HTMLButtonElement;
-
+    {autenticado && (
+      <script type="application/json" id="estado-inicial" set:html={estadoInicial}></script>
+      <script>
+        const estadoEl = document.getElementById('estado-inicial');
+        if (estadoEl) {
         const CLOUD_NAME = 'dw26ujhoo';
         const UPLOAD_PRESET = 'portafolio_unsigned';
 
-        function renumerar() {
-          const filas = lista.querySelectorAll('[data-trabajo]');
-          filas.forEach((fila, i) => {
-            (fila.querySelector('[data-label]') as HTMLElement).textContent = `Trabajo ${i + 1}`;
-            (fila.querySelector('[data-nombre]') as HTMLInputElement).name = `nombre_${i}`;
-            (fila.querySelector('[data-titulo]') as HTMLInputElement).name = `titulo_${i}`;
-            (fila.querySelector('[data-imagenes-json]') as HTMLInputElement).name = `imagenes_${i}`;
+        const estado = JSON.parse(estadoEl.textContent || '{}');
+        const esc = (v: unknown) =>
+          String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+        // ---- helpers de path (Sitio) ----
+        function setPath(obj: any, path: string, value: unknown) {
+          const parts = path.split('.');
+          let o = obj;
+          for (let i = 0; i < parts.length - 1; i++) o = o[parts[i]];
+          o[parts[parts.length - 1]] = value;
+        }
+
+        document.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[data-path]').forEach((el) => {
+          el.addEventListener('input', () => {
+            const v = el.dataset.tipo === 'number' ? (el.value === '' ? 0 : Number(el.value)) : el.value;
+            setPath(estado, el.dataset.path!, v);
           });
-          totalInput.value = String(filas.length);
+        });
+
+        // ---- Cloudinary ----
+        async function subir(file: File): Promise<string> {
+          const fd = new FormData();
+          fd.append('file', file);
+          fd.append('upload_preset', UPLOAD_PRESET);
+          const r = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method: 'POST', body: fd });
+          if (!r.ok) throw new Error('fallo');
+          return (await r.json()).secure_url as string;
         }
 
-        // Crea una miniatura con su botón Quitar
-        function itemImagen(url: string): HTMLElement {
-          const div = document.createElement('div');
-          div.dataset.img = '';
-          div.className = 'flex items-center gap-3';
-          div.innerHTML = `
-            <img src="${url}" class="w-16 h-16 object-cover rounded-lg border border-gray-200" />
-            <button type="button" data-borrar-img class="text-red-600 text-xs hover:underline">Quitar</button>
-          `;
-          return div;
-        }
+        // ---- Sobre: foto ----
+        const fileSobre = document.querySelector<HTMLInputElement>('[data-upload="sobre-foto"]');
+        fileSobre?.addEventListener('change', async () => {
+          const f = fileSobre.files?.[0];
+          if (!f) return;
+          const st = document.querySelector('[data-sobre-status]')!;
+          const prev = document.querySelector<HTMLImageElement>('[data-sobre-preview]')!;
+          st.textContent = '⏳ Subiendo…';
+          try {
+            const url = await subir(f);
+            estado.sitio.sobre.foto = url;
+            prev.src = url;
+            prev.classList.remove('hidden');
+            st.textContent = '✅ Imagen lista';
+          } catch {
+            st.textContent = '⚠️ No se pudo subir';
+          }
+          fileSobre.value = '';
+        });
 
-        // Lee las imágenes de una fila y guarda la lista (JSON) en su campo oculto
-        function sincronizarImagenes(fila: HTMLElement) {
-          const imgs = Array.from(fila.querySelectorAll<HTMLImageElement>('[data-img] img'));
-          const urls = imgs.map((img) => img.src);
-          const hidden = fila.querySelector('[data-imagenes-json]') as HTMLInputElement;
-          hidden.value = JSON.stringify(urls);
-        }
-
-        function agregarTrabajo() {
-          const fila = document.createElement('div');
-          fila.dataset.trabajo = '';
-          fila.className = 'border border-gray-200 rounded-xl p-4 space-y-3';
-          fila.innerHTML = `
-            <div class="flex justify-between items-center">
-              <p data-label class="text-xs font-semibold text-gray-400 uppercase">Trabajo</p>
-              <button type="button" data-borrar class="text-red-600 text-sm hover:underline">🗑️ Borrar trabajo</button>
+        // ---- TRABAJOS ----
+        const listaTrab = document.getElementById('lista-trabajos')!;
+        function filaTrabajo(t: any, i: number) {
+          const galeria = (t.galeria ?? []).map((u: string, gi: number) => `
+            <span class="relative inline-block">
+              <img src="${esc(u)}" alt="Imagen ${gi + 1} de ${esc(t.titulo)}" class="h-14 w-14 rounded-lg border border-linea object-cover" />
+              <button type="button" data-galeria-quitar data-i="${i}" data-gi="${gi}" aria-label="Quitar imagen ${gi + 1}" class="absolute -right-1 -top-1 rounded-full bg-coral-deep px-1.5 text-xs text-hueso">×</button>
+            </span>`).join('');
+          return `
+          <div class="rounded-xl border border-linea bg-hueso p-4 space-y-3">
+            <div class="flex items-center justify-between">
+              <p class="text-xs font-semibold uppercase text-tenue">Trabajo ${i + 1}</p>
+              <div class="flex items-center gap-2">
+                <button type="button" data-mover data-dir="-1" data-i="${i}" aria-label="Subir" class="text-tinta-suave hover:text-tinta">↑</button>
+                <button type="button" data-mover data-dir="1" data-i="${i}" aria-label="Bajar" class="text-tinta-suave hover:text-tinta">↓</button>
+                <button type="button" data-borrar-trab data-i="${i}" class="text-sm text-coral-deep hover:underline">Borrar</button>
+              </div>
             </div>
-            <input type="text" data-nombre placeholder="Nombre"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-600" />
-            <input type="text" data-titulo placeholder="Título"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-600" />
-            <p class="text-xs font-medium text-gray-500">Imágenes</p>
-            <div data-imagenes class="space-y-2 max-h-64 overflow-y-auto pr-1"></div>
-            <input type="file" accept="image/*" multiple data-file
-              class="w-full text-sm text-gray-600 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-indigo-600 file:text-white file:cursor-pointer hover:file:bg-indigo-700" />
-            <p data-upload-status class="text-xs text-gray-500 min-h-4"></p>
-            <input type="hidden" data-imagenes-json value="[]" />
-          `;
-          lista.appendChild(fila);
-          renumerar();
+            <label class="block text-sm text-tinta-suave">Título
+              <input data-tc="titulo" data-i="${i}" value="${esc(t.titulo)}" autocomplete="off" class="w-full rounded-lg border border-linea bg-hueso px-3 py-2 text-tinta" />
+            </label>
+            <div class="grid sm:grid-cols-2 gap-3">
+              <label class="block text-sm text-tinta-suave">Categoría
+                <input data-tc="categoria" data-i="${i}" value="${esc(t.categoria)}" autocomplete="off" class="w-full rounded-lg border border-linea bg-hueso px-3 py-2 text-tinta" />
+              </label>
+              <label class="block text-sm text-tinta-suave">Engagement
+                <input data-tc="engagement" data-i="${i}" value="${esc(t.engagement)}" autocomplete="off" class="w-full rounded-lg border border-linea bg-hueso px-3 py-2 text-tinta" />
+              </label>
+            </div>
+            <label class="flex items-center gap-2 text-sm text-tinta">
+              <input type="checkbox" data-destacado data-i="${i}" ${t.destacado ? 'checked' : ''} /> Destacado (celda grande)
+            </label>
+            <div>
+              <p class="text-sm text-tinta-suave mb-1">Portada</p>
+              <div class="flex items-center gap-3">
+                <img src="${esc(t.imagen)}" alt="Portada de ${esc(t.titulo)}" class="h-14 w-14 rounded-lg border border-linea object-cover ${t.imagen ? '' : 'hidden'}" data-portada-prev data-i="${i}" />
+                <input type="file" accept="image/*" data-portada data-i="${i}" autocomplete="off" class="text-sm text-tinta-suave" />
+              </div>
+            </div>
+            <div>
+              <p class="text-sm text-tinta-suave mb-1">Galería</p>
+              <div class="flex flex-wrap gap-2 mb-2">${galeria}</div>
+              <input type="file" accept="image/*" multiple data-galeria-add data-i="${i}" autocomplete="off" class="text-sm text-tinta-suave" />
+            </div>
+            <p data-trab-status data-i="${i}" class="text-xs text-tinta-suave min-h-4"></p>
+          </div>`;
+        }
+        function renderTrabajos() {
+          listaTrab.innerHTML = estado.trabajos.map((t: any, i: number) => filaTrabajo(t, i)).join('');
         }
 
-        // Sube un archivo a Cloudinary y devuelve la URL
-        async function subirACloudinary(file: File): Promise<string> {
-          const datos = new FormData();
-          datos.append('file', file);
-          datos.append('upload_preset', UPLOAD_PRESET);
-          const resp = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
-            method: 'POST',
-            body: datos,
-          });
-          if (!resp.ok) throw new Error('Falló la subida');
-          const json = await resp.json() as { secure_url: string };
-          return json.secure_url;
-        }
-
-        btnAgregar.addEventListener('click', agregarTrabajo);
-
-        // Clics: borrar trabajo o quitar imagen (delegación)
-        lista.addEventListener('click', (e) => {
-          const target = e.target as HTMLElement;
-
-          const btnTrabajo = target.closest('[data-borrar]');
-          if (btnTrabajo) {
-            (btnTrabajo.closest('[data-trabajo]') as HTMLElement).remove();
-            renumerar();
+        listaTrab.addEventListener('input', (e) => {
+          const el = e.target as HTMLInputElement;
+          if (el.dataset.tc) estado.trabajos[Number(el.dataset.i)][el.dataset.tc] = el.value;
+        });
+        listaTrab.addEventListener('change', async (e) => {
+          const el = e.target as HTMLInputElement;
+          const i = Number(el.dataset.i);
+          if (el.hasAttribute('data-destacado')) {
+            estado.trabajos[i].destacado = el.checked;
             return;
           }
-
-          const btnImg = target.closest('[data-borrar-img]');
-          if (btnImg) {
-            const fila = btnImg.closest('[data-trabajo]') as HTMLElement;
-            (btnImg.closest('[data-img]') as HTMLElement).remove();
-            sincronizarImagenes(fila);
+          if (el.dataset.portada !== undefined && el.matches('[data-portada]')) {
+            const f = el.files?.[0]; if (!f) return;
+            const st = listaTrab.querySelector(`[data-trab-status][data-i="${i}"]`)!;
+            st.textContent = '⏳ Subiendo portada…';
+            try { estado.trabajos[i].imagen = await subir(f); st.textContent = '✅ Portada lista'; renderTrabajos(); }
+            catch { st.textContent = '⚠️ No se pudo subir'; }
+            return;
           }
-        });
-
-        // Subir imágenes al elegir archivo(s) (delegación)
-        lista.addEventListener('change', async (e) => {
-          const input = e.target as HTMLInputElement;
-          if (!input.matches('[data-file]')) return;
-          const files = input.files;
-          if (!files || files.length === 0) return;
-
-          const fila = input.closest('[data-trabajo]') as HTMLElement;
-          const estado = fila.querySelector('[data-upload-status]') as HTMLElement;
-          const contenedor = fila.querySelector('[data-imagenes]') as HTMLElement;
-
-          const archivos = Array.from(files);
-          let subidas = 0;
-          for (const file of archivos) {
-            estado.textContent = `⏳ Subiendo ${subidas + 1} de ${archivos.length}…`;
-            try {
-              const url = await subirACloudinary(file);
-              contenedor.appendChild(itemImagen(url));
-              sincronizarImagenes(fila);
-              subidas++;
-            } catch {
-              // si una falla, sigue con las demás
+          if (el.matches('[data-galeria-add]')) {
+            const files = Array.from(el.files ?? []);
+            if (!files.length) return;
+            const st = listaTrab.querySelector(`[data-trab-status][data-i="${i}"]`)!;
+            let ok = 0;
+            for (const f of files) {
+              st.textContent = `⏳ Subiendo ${ok + 1} de ${files.length}…`;
+              try { estado.trabajos[i].galeria.push(await subir(f)); ok++; } catch { /* sigue */ }
             }
+            st.textContent = ok === files.length ? `✅ ${ok} agregada(s)` : `⚠️ ${ok} de ${files.length}`;
+            renderTrabajos();
           }
-          estado.textContent = subidas === archivos.length
-            ? `✅ ${subidas} imagen(es) agregada(s)`
-            : `⚠️ Subidas ${subidas} de ${archivos.length} (algunas fallaron)`;
-          input.value = '';
+        });
+        listaTrab.addEventListener('click', (e) => {
+          const el = (e.target as HTMLElement).closest('button');
+          if (!el) return;
+          const i = Number(el.dataset.i);
+          if (el.hasAttribute('data-borrar-trab')) { estado.trabajos.splice(i, 1); renderTrabajos(); }
+          else if (el.hasAttribute('data-mover')) {
+            const j = i + Number(el.dataset.dir);
+            if (j < 0 || j >= estado.trabajos.length) return;
+            [estado.trabajos[i], estado.trabajos[j]] = [estado.trabajos[j], estado.trabajos[i]];
+            renderTrabajos();
+          } else if (el.hasAttribute('data-galeria-quitar')) {
+            estado.trabajos[i].galeria.splice(Number(el.dataset.gi), 1); renderTrabajos();
+          }
+        });
+        document.getElementById('add-trabajo')!.addEventListener('click', () => {
+          estado.trabajos.push({ titulo: '', categoria: '', engagement: '', destacado: false, imagen: '', galeria: [], orden: estado.trabajos.length + 1 });
+          renderTrabajos();
         });
 
-        renumerar();
-      }
-    </script>
+        // ---- SERVICIOS ----
+        const listaServ = document.getElementById('lista-servicios')!;
+        function filaServicio(sv: any, i: number) {
+          return `
+          <div class="rounded-xl border border-linea bg-hueso p-4 space-y-3">
+            <div class="flex items-center justify-between">
+              <p class="text-xs font-semibold uppercase text-tenue">Servicio ${i + 1}</p>
+              <button type="button" data-borrar-serv data-i="${i}" class="text-sm text-coral-deep hover:underline">Borrar</button>
+            </div>
+            <label class="block text-sm text-tinta-suave">Título
+              <input data-sc="titulo" data-i="${i}" value="${esc(sv.titulo)}" autocomplete="off" class="w-full rounded-lg border border-linea bg-hueso px-3 py-2 text-tinta" />
+            </label>
+            <label class="block text-sm text-tinta-suave">Descripción
+              <input data-sc="descripcion" data-i="${i}" value="${esc(sv.descripcion)}" autocomplete="off" class="w-full rounded-lg border border-linea bg-hueso px-3 py-2 text-tinta" />
+            </label>
+          </div>`;
+        }
+        function renderServicios() {
+          listaServ.innerHTML = estado.servicios.map((sv: any, i: number) => filaServicio(sv, i)).join('');
+        }
+        listaServ.addEventListener('input', (e) => {
+          const el = e.target as HTMLInputElement;
+          if (el.dataset.sc) estado.servicios[Number(el.dataset.i)][el.dataset.sc] = el.value;
+        });
+        listaServ.addEventListener('click', (e) => {
+          const el = (e.target as HTMLElement).closest('button');
+          if (el?.hasAttribute('data-borrar-serv')) { estado.servicios.splice(Number(el.dataset.i), 1); renderServicios(); }
+        });
+        document.getElementById('add-servicio')!.addEventListener('click', () => {
+          estado.servicios.push({ titulo: '', descripcion: '' });
+          renderServicios();
+        });
+
+        // ---- Pestañas ----
+        const tabs = document.querySelectorAll<HTMLButtonElement>('[data-tab]');
+        const paneles = document.querySelectorAll<HTMLElement>('[data-panel]');
+        tabs.forEach((t) => t.addEventListener('click', () => {
+          tabs.forEach((x) => x.setAttribute('aria-selected', String(x === t)));
+          paneles.forEach((p) => { p.hidden = p.dataset.panel !== t.dataset.tab; });
+        }));
+
+        // ---- Guardar: vuelca el estado al payload (orden recalculado) ----
+        const form = document.querySelector('form[action="/api/guardar"]') as HTMLFormElement;
+        form.addEventListener('submit', () => {
+          estado.trabajos.forEach((t: any, i: number) => { t.orden = i + 1; });
+          (document.getElementById('payload') as HTMLInputElement).value = JSON.stringify(estado);
+        });
+
+        renderTrabajos();
+        renderServicios();
+        }
+      </script>
+    )}
   </body>
 </html>
