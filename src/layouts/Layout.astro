@@ -6,25 +6,33 @@ import { sitio } from '../config';
 
 const { titulo = sitio.nombre } = Astro.props;
 const descripcion = `Portafolio de ${sitio.nombre} — ${sitio.tagline}.`;
-const imagenOG = `https://placehold.co/1200x630/7c6dfa/ffffff?text=${encodeURIComponent(sitio.nombre)}`;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const imagenOG = new URL('/og.png', Astro.site).href;
+const ogAlt = `${sitio.nombre} — ${sitio.tagline}`;
 ---
 
 <html lang="es">
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
 
     <title>{titulo}</title>
     <meta name="description" content={descripcion} />
+    <link rel="canonical" href={canonical} />
 
     <!-- Open Graph (WhatsApp, Facebook, Instagram) -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={sitio.nombre} />
     <meta property="og:title" content={titulo} />
     <meta property="og:description" content={descripcion} />
+    <meta property="og:url" content={canonical} />
     <meta property="og:image" content={imagenOG} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogAlt} />
 
     <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -32,6 +40,7 @@ const imagenOG = `https://placehold.co/1200x630/7c6dfa/ffffff?text=${encodeURICo
     <meta name="twitter:description" content={descripcion} />
     <meta name="twitter:image" content={imagenOG} />
 
+    <slot name="head" />
   </head>
   <body>
     <a

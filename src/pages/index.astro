@@ -7,9 +7,22 @@ import Servicios from '../components/Servicios.astro';
 import Contacto from '../components/Contacto.astro';
 import { sitio } from '../config';
 import Lightbox from '../components/Lightbox.astro';
+
+const personLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: sitio.nombre,
+  jobTitle: 'Diseñadora gráfica de contenido para redes sociales',
+  url: new URL('/', Astro.site).href,
+  image: new URL('/og.png', Astro.site).href,
+  email: sitio.redes.email,
+  sameAs: [sitio.redes.instagram, sitio.redes.behance].filter(Boolean),
+};
+const personLdJson = JSON.stringify(personLd).replace(/</g, '\\u003c');
 ---
 
 <Layout titulo={sitio.nombre}>
+  <script type="application/ld+json" slot="head" is:inline set:html={personLdJson} />
   <Hero />
   <Trabajos />
   <Sobre />
