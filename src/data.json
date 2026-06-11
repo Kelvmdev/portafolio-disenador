@@ -77,10 +77,21 @@
   ],
   "trabajos": [
     {
+      "titulo": "Promo Black Friday",
+      "categoria": "Historia · Instagram",
+      "engagement": "1.1k",
+      "orden": 1,
+      "destacado": true,
+      "imagen": "",
+      "galeria": [
+        "https://res.cloudinary.com/dw26ujhoo/image/upload/v1781210789/pk4vk7u7y8cbfwww6udj.jpg"
+      ]
+    },
+    {
       "titulo": "Campaña Luna Tibiá",
       "categoria": "Post · Instagram",
       "engagement": "2.4k",
-      "orden": 1,
+      "orden": 2,
       "destacado": false,
       "imagen": "https://res.cloudinary.com/dw26ujhoo/image/upload/v1781210753/ajqh8xk8yyjjb5cpgy9l.jpg",
       "galeria": [
@@ -92,22 +103,11 @@
       "titulo": "Identidad de marca",
       "categoria": "Logo · Branding",
       "engagement": "1.8k",
-      "orden": 2,
+      "orden": 3,
       "destacado": false,
       "imagen": "",
       "galeria": [
         "https://res.cloudinary.com/dw26ujhoo/image/upload/v1781210775/zaygyqljhipcharpil4p.jpg"
-      ]
-    },
-    {
-      "titulo": "Promo Black Friday",
-      "categoria": "Historia · Instagram",
-      "engagement": "1.1k",
-      "orden": 3,
-      "destacado": true,
-      "imagen": "",
-      "galeria": [
-        "https://res.cloudinary.com/dw26ujhoo/image/upload/v1781210789/pk4vk7u7y8cbfwww6udj.jpg"
       ]
     },
     {
