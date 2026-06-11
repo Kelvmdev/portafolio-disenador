@@ -1,14 +1,87 @@
 ---
 import { sitio } from '../config';
+import Boton from './Boton.astro';
+
+const enlaces = [
+  { texto: 'Trabajos', href: '#trabajos' },
+  { texto: 'Sobre mí', href: '#sobre' },
+  { texto: 'Servicios', href: '#servicios' },
+];
 ---
 
-<nav class="bg-white shadow-sm sticky top-0 z-50">
-  <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-    <a href="/" class="text-xl font-bold text-gray-900">
-      {sitio.nombre}
-    </a>
-    <a href="#contacto" class="text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg transition">
-      Contáctame
-    </a>
+<nav class="sticky top-0 z-50 bg-hueso border-b border-linea">
+  <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+    <a href="/" class="font-display text-2xl leading-none text-tinta">{sitio.nombre}</a>
+
+    <!-- Escritorio -->
+    <div class="hidden md:flex items-center gap-8">
+      <ul class="flex items-center gap-6">
+        {enlaces.map((e) => (
+          <li>
+            <a href={e.href} class="text-sm text-tinta-suave transition hover:text-coral-deep">{e.texto}</a>
+          </li>
+        ))}
+      </ul>
+      <Boton href="#contacto">Contáctame</Boton>
+    </div>
+
+    <!-- Botón hamburguesa (móvil) -->
+    <button
+      type="button"
+      data-menu-toggle
+      aria-label="Abrir menú"
+      aria-controls="menu-movil"
+      aria-expanded="false"
+      class="md:hidden inline-flex h-10 w-10 -mr-2 items-center justify-center text-tinta"
+    >
+      <svg data-icono-abrir xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" />
+      </svg>
+      <svg data-icono-cerrar class="hidden" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <line x1="6" y1="6" x2="18" y2="18" /><line x1="6" y1="18" x2="18" y2="6" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Panel móvil -->
+  <div id="menu-movil" data-menu hidden class="md:hidden border-t border-linea bg-hueso">
+    <ul class="max-w-6xl mx-auto px-6 py-4 flex flex-col gap-1">
+      {enlaces.map((e) => (
+        <li>
+          <a href={e.href} data-menu-link class="block py-2 text-tinta-suave transition hover:text-coral-deep">{e.texto}</a>
+        </li>
+      ))}
+      <li class="pt-3">
+        <Boton href="#contacto" class="w-full">Contáctame</Boton>
+      </li>
+    </ul>
   </div>
 </nav>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const menu = document.getElementById('menu-movil');
+  const iconoAbrir = toggle?.querySelector('[data-icono-abrir]');
+  const iconoCerrar = toggle?.querySelector('[data-icono-cerrar]');
+
+  function setAbierto(abierto: boolean) {
+    if (!menu || !toggle) return;
+    menu.hidden = !abierto;
+    toggle.setAttribute('aria-expanded', String(abierto));
+    toggle.setAttribute('aria-label', abierto ? 'Cerrar menú' : 'Abrir menú');
+    iconoAbrir?.classList.toggle('hidden', abierto);
+    iconoCerrar?.classList.toggle('hidden', !abierto);
+  }
+
+  toggle?.addEventListener('click', () => setAbierto(menu?.hidden ?? true));
+
+  // Cerrar al navegar a una sección
+  menu?.querySelectorAll('[data-menu-link]').forEach((a) =>
+    a.addEventListener('click', () => setAbierto(false))
+  );
+
+  // Cerrar con Esc
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && menu && !menu.hidden) setAbierto(false);
+  });
+</script>

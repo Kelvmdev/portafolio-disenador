@@ -1,8 +1,58 @@
 @import "tailwindcss";
-body {
-  font-family: "Poppins", sans-serif;
+
+/* Fuentes locales (mejor LCP que <link> a Google) — subconjunto latin */
+@import "@fontsource/instrument-serif/latin-400.css";
+@import "@fontsource/instrument-serif/latin-400-italic.css";
+@import "@fontsource/space-grotesk/latin-400.css";
+@import "@fontsource/space-grotesk/latin-500.css";
+@import "@fontsource/space-grotesk/latin-700.css";
+
+/* Paleta — "feed que cobró vida" (BRIEF §1.1) */
+@theme {
+  --color-hueso: #fbf8f2;        /* fondo principal */
+  --color-crema: #efe9df;        /* superficies / tarjetas suaves */
+  --color-tinta: #1c1a17;        /* texto principal */
+  --color-tinta-suave: #6b6256;  /* texto secundario */
+  --color-tenue: #8a8073;        /* hints, captions */
+  --color-linea: #e7dfd0;        /* bordes / divisores */
+  --color-coral: #ff5a3c;        /* ACENTO brillante → fondos, decor, iconos */
+  --color-coral-deep: #c5371a;   /* ACENTO para TEXTO/enlaces (pasa AA) */
 }
+
+/* Fuentes como tokens → utilidades font-display / font-body */
+@theme inline {
+  --font-display: "Instrument Serif", serif;
+  --font-body: "Space Grotesk", system-ui, sans-serif;
+}
+
+body {
+  background: var(--color-hueso);
+  color: var(--color-tinta);
+  font-family: var(--font-body);
+}
+
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 5rem;
+  scroll-padding-top: 5rem; /* alto del nav sticky */
+}
+
+/* Foco de teclado visible y global (anillo coral-deep, AA) */
+:where(a, button, input, textarea, select):focus-visible {
+  outline: 2px solid var(--color-coral-deep);
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+/* Respeta a quien pide menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

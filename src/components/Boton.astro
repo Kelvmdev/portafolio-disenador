@@ -1,0 +1,37 @@
+---
+// Botón reutilizable. Renderiza <a> si recibe href, si no <button>.
+// Variantes: "primario" (coral-deep, texto claro) · "secundario" (contorno).
+// Lleva el gesto de feedback del manual §5.5 por defecto.
+interface Props {
+  href?: string;
+  type?: 'button' | 'submit';
+  variante?: 'primario' | 'secundario';
+  class?: string;
+  [key: string]: unknown;
+}
+
+const {
+  href,
+  type = 'button',
+  variante = 'primario',
+  class: clase = '',
+  ...rest
+} = Astro.props;
+
+const base =
+  'inline-flex items-center justify-center gap-2 font-body font-medium text-sm rounded-full px-6 py-2.5 transition duration-150 active:scale-95 disabled:active:scale-100 disabled:opacity-60 disabled:cursor-not-allowed';
+
+const variantes: Record<string, string> = {
+  // coral-deep para fondo con texto claro → pasa contraste AA (brief §1.1)
+  primario: 'bg-coral-deep text-hueso hover:-translate-y-px hover:shadow-lg',
+  secundario: 'bg-transparent text-tinta border border-linea hover:bg-crema hover:border-tenue',
+};
+
+const clases = `${base} ${variantes[variante] ?? variantes.primario} ${clase}`;
+---
+
+{href ? (
+  <a href={href} class={clases} {...rest}><slot /></a>
+) : (
+  <button type={type} class={clases} {...rest}><slot /></button>
+)}

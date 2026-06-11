@@ -32,13 +32,18 @@ const imagenOG = `https://placehold.co/1200x630/7c6dfa/ffffff?text=${encodeURICo
     <meta name="twitter:description" content={descripcion} />
     <meta name="twitter:image" content={imagenOG} />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   </head>
-  <body class="bg-gray-50 text-gray-900">
+  <body>
+    <a
+      href="#contenido"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:rounded-lg focus:bg-coral-deep focus:px-4 focus:py-2 focus:text-hueso"
+    >
+      Saltar al contenido
+    </a>
     <Navbar />
-    <slot />
+    <main id="contenido" tabindex="-1">
+      <slot />
+    </main>
     <Footer />
   </body>
 </html>
