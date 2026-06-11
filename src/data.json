@@ -82,13 +82,10 @@
       "engagement": "2.4k",
       "orden": 1,
       "destacado": true,
-      "imagen": "https://res.cloudinary.com/dw26ujhoo/image/upload/v1780162634/r7i8hhm0p97qu1zi1yhy.png",
+      "imagen": "https://res.cloudinary.com/dw26ujhoo/image/upload/v1781210753/ajqh8xk8yyjjb5cpgy9l.jpg",
       "galeria": [
-        "https://res.cloudinary.com/dw26ujhoo/image/upload/v1780164162/n3mrjhte4bqwog2nmmve.png",
-        "https://res.cloudinary.com/dw26ujhoo/image/upload/v1780164168/fucfghxxrzm0uabhz6lu.png",
-        "https://res.cloudinary.com/dw26ujhoo/image/upload/v1780164173/qpizedwgm6bdgqydjckc.png",
-        "https://res.cloudinary.com/dw26ujhoo/image/upload/v1780164178/mcfo2hwed06hy6vrspwg.png",
-        "https://res.cloudinary.com/dw26ujhoo/image/upload/v1780164183/imxv0j2tpdvih7dnzda5.png"
+        "https://res.cloudinary.com/dw26ujhoo/image/upload/v1781210943/m5ie0b5ysaoyvhqwq9x8.jpg",
+        "https://res.cloudinary.com/dw26ujhoo/image/upload/v1781210944/w91berolqzftldyeqepq.jpg"
       ]
     },
     {
@@ -99,9 +96,7 @@
       "destacado": false,
       "imagen": "",
       "galeria": [
-        "https://res.cloudinary.com/dw26ujhoo/image/upload/v1780165224/bzxa3jqqummmafiotbcn.png",
-        "https://res.cloudinary.com/dw26ujhoo/image/upload/v1780165224/eczk1gugplws8x2mnrao.png",
-        "https://res.cloudinary.com/dw26ujhoo/image/upload/v1780165225/rjfmfscqsbfehjdnowyl.png"
+        "https://res.cloudinary.com/dw26ujhoo/image/upload/v1781210775/zaygyqljhipcharpil4p.jpg"
       ]
     },
     {
@@ -112,7 +107,7 @@
       "destacado": false,
       "imagen": "",
       "galeria": [
-        "https://res.cloudinary.com/dw26ujhoo/image/upload/v1781206688/cjedllpjff6jqxxeyor2.png"
+        "https://res.cloudinary.com/dw26ujhoo/image/upload/v1781210789/pk4vk7u7y8cbfwww6udj.jpg"
       ]
     },
     {
@@ -122,7 +117,9 @@
       "orden": 4,
       "destacado": false,
       "imagen": "",
-      "galeria": []
+      "galeria": [
+        "https://res.cloudinary.com/dw26ujhoo/image/upload/v1781210797/u5ok65gut0osepozpjqe.jpg"
+      ]
     },
     {
       "titulo": "Evento de música",
@@ -131,7 +128,9 @@
       "orden": 5,
       "destacado": false,
       "imagen": "",
-      "galeria": []
+      "galeria": [
+        "https://res.cloudinary.com/dw26ujhoo/image/upload/v1781210817/okqaussblynxgtw48baq.jpg"
+      ]
     },
     {
       "titulo": "Reels",
@@ -140,7 +139,9 @@
       "orden": 6,
       "destacado": false,
       "imagen": "",
-      "galeria": []
+      "galeria": [
+        "https://res.cloudinary.com/dw26ujhoo/image/upload/v1781210825/etccj6sn4paozrmda7z9.jpg"
+      ]
     }
   ]
 }
