@@ -15,6 +15,7 @@
       { "numero": 120, "prefijo": "", "sufijo": "+", "decimales": 0, "etiqueta": "piezas" },
       { "numero": 98, "prefijo": "", "sufijo": "%", "decimales": 0, "etiqueta": "de clientes repiten" }
     ],
+    "trabajosTitulo": "Trabajos seleccionados",
     "redes": {
       "instagram": "https://instagram.com/laura.disena",
       "behance": "https://behance.net/lauragomez",
@@ -23,10 +24,13 @@
   },
   "trabajos": [
     {
-      "nombre": "Campaña Luna Tibia",
-      "titulo": "Post para Instagram",
-      "imagenes": [
-        "https://res.cloudinary.com/dw26ujhoo/image/upload/v1780162634/r7i8hhm0p97qu1zi1yhy.png",
+      "titulo": "Campaña Luna Tibia",
+      "categoria": "Post · Instagram",
+      "engagement": "2.4k",
+      "orden": 1,
+      "destacado": true,
+      "imagen": "https://res.cloudinary.com/dw26ujhoo/image/upload/v1780162634/r7i8hhm0p97qu1zi1yhy.png",
+      "galeria": [
         "https://res.cloudinary.com/dw26ujhoo/image/upload/v1780164162/n3mrjhte4bqwog2nmmve.png",
         "https://res.cloudinary.com/dw26ujhoo/image/upload/v1780164168/fucfghxxrzm0uabhz6lu.png",
         "https://res.cloudinary.com/dw26ujhoo/image/upload/v1780164173/qpizedwgm6bdgqydjckc.png",
@@ -35,42 +39,53 @@
       ]
     },
     {
-      "nombre": "Identidad de Marca",
-      "titulo": "Diseño de logo",
-      "imagenes": [
-        "https://placehold.co/600x400/db2777/ffffff?text=Trabajo+2",
+      "titulo": "Identidad de marca",
+      "categoria": "Logo · Branding",
+      "engagement": "1.8k",
+      "orden": 2,
+      "destacado": false,
+      "imagen": "",
+      "galeria": [
         "https://res.cloudinary.com/dw26ujhoo/image/upload/v1780165224/bzxa3jqqummmafiotbcn.png",
         "https://res.cloudinary.com/dw26ujhoo/image/upload/v1780165224/eczk1gugplws8x2mnrao.png",
         "https://res.cloudinary.com/dw26ujhoo/image/upload/v1780165225/rjfmfscqsbfehjdnowyl.png"
       ]
     },
     {
-      "nombre": "Promo Black Friday",
-      "titulo": "Historia de Instagram",
-      "imagenes": [
-        "https://placehold.co/600x400/d97706/ffffff?text=Trabajo+3"
-      ]
+      "titulo": "Promo Black Friday",
+      "categoria": "Historia · Instagram",
+      "engagement": "1.1k",
+      "orden": 3,
+      "destacado": false,
+      "imagen": "",
+      "galeria": []
     },
     {
-      "nombre": "Lanzamiento Producto",
-      "titulo": "Carrusel",
-      "imagenes": [
-        "https://placehold.co/600x400/059669/ffffff?text=Trabajo+4"
-      ]
+      "titulo": "Lanzamiento de producto",
+      "categoria": "Carrusel",
+      "engagement": "940",
+      "orden": 4,
+      "destacado": false,
+      "imagen": "",
+      "galeria": []
     },
     {
-      "nombre": "Evento de Música",
-      "titulo": "Flyer digital",
-      "imagenes": [
-        "https://placehold.co/600x400/0284c7/ffffff?text=Trabajo+5"
-      ]
+      "titulo": "Evento de música",
+      "categoria": "Flyer digital",
+      "engagement": "860",
+      "orden": 5,
+      "destacado": false,
+      "imagen": "",
+      "galeria": []
     },
     {
-      "nombre": "Reels",
-      "titulo": "Portada de video",
-      "imagenes": [
-        "https://placehold.co/600x400/7c3aed/ffffff?text=Trabajo+6"
-      ]
+      "titulo": "Reels",
+      "categoria": "Reel",
+      "engagement": "3.1k",
+      "orden": 6,
+      "destacado": false,
+      "imagen": "",
+      "galeria": []
     }
   ]
 }

@@ -1,0 +1,68 @@
+---
+import { imagenOptimizada } from '../lib/img';
+import type { Pieza } from '../config';
+
+interface Props {
+  pieza: Pieza;
+  clase?: string;
+}
+const { pieza, clase = '' } = Astro.props;
+
+// Fotos reales para el lightbox (la portada va primera si existe).
+const fotos = [pieza.imagen, ...pieza.galeria].filter((u) => Boolean(u) && u.startsWith('http'));
+const portada = fotos[0] ?? '';
+const interactiva = fotos.length > 0;
+
+// La imagen grande del lightbox va optimizada a un ancho mayor (~1200).
+const fotosLightbox = fotos.map((u) => imagenOptimizada(u, 1200));
+
+// Placeholder de marca (TEMPORAL — se reemplaza por la URL real desde el CMS, Tanda 5).
+const estilos = [
+  'bg-coral text-tinta',
+  'bg-tinta text-hueso',
+  'bg-coral-deep text-hueso',
+  'bg-tinta-suave text-hueso',
+];
+const estiloPlaceholder = estilos[(pieza.orden - 1) % estilos.length];
+
+const base =
+  'group relative block w-full overflow-hidden rounded-2xl aspect-[4/3] md:aspect-auto md:h-full motion-safe:transition motion-safe:duration-300';
+const interactivo = 'cursor-pointer text-left motion-safe:hover:scale-[1.02] hover:shadow-xl';
+const clases = `${base} ${interactiva ? interactivo : ''} ${clase}`;
+
+const Tag = interactiva ? 'button' : 'div';
+const attrs = interactiva
+  ? {
+      type: 'button',
+      'data-galeria': true,
+      'data-fotos': JSON.stringify(fotosLightbox),
+      'data-nombre': pieza.titulo,
+      'aria-label': `Ver galería: ${pieza.titulo} (${fotos.length} ${fotos.length === 1 ? 'imagen' : 'imágenes'})`,
+    }
+  : {};
+---
+
+<Tag class={clases} {...attrs}>
+  {interactiva ? (
+    <img
+      src={imagenOptimizada(portada, 700)}
+      alt={`${pieza.titulo} — ${pieza.categoria}`}
+      loading="lazy"
+      decoding="async"
+      class="absolute inset-0 h-full w-full object-cover"
+    />
+  ) : (
+    <div class={`absolute inset-0 flex items-center justify-center p-6 ${estiloPlaceholder}`}>
+      <p class="font-display text-2xl sm:text-3xl text-center leading-tight">{pieza.titulo}</p>
+    </div>
+  )}
+
+  <!-- Overlay "publicación": categoría + engagement. Scrim fuerte + text-shadow
+       para garantizar AA del texto blanco sobre CUALQUIER imagen (clara u oscura). -->
+  <div class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 bg-gradient-to-t from-[#000000e6] via-[#0000008c] to-transparent p-3 pt-14 sm:p-4 sm:pt-16 [text-shadow:0_1px_3px_rgba(0,0,0,0.85)]">
+    <span class="text-xs sm:text-sm font-semibold text-white">{pieza.categoria}</span>
+    <span class="whitespace-nowrap text-xs sm:text-sm font-semibold text-white">
+      <span aria-hidden="true" class="text-coral">♥</span> {pieza.engagement}
+    </span>
+  </div>
+</Tag>

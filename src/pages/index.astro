@@ -1,19 +1,13 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
-import TarjetaTrabajo from '../components/TarjetaTrabajo.astro';
-import { sitio, trabajos } from '../config';
+import Trabajos from '../components/Trabajos.astro';
+import { sitio } from '../config';
 import Lightbox from '../components/Lightbox.astro';
 ---
 
 <Layout titulo={sitio.nombre}>
   <Hero />
-
-  <section id="trabajos" class="max-w-6xl mx-auto px-6 pb-24">
-    <h2 class="text-3xl font-bold text-gray-900 text-center mb-12">Trabajos seleccionados</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {trabajos.map((t) => <TarjetaTrabajo {...t} />)}
-    </div>
-  </section>
+  <Trabajos />
   <Lightbox />
 </Layout>

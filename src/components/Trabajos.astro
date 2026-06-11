@@ -1,0 +1,17 @@
+---
+import { sitio, piezas } from '../config';
+import PiezaTrabajo from './PiezaTrabajo.astro';
+---
+
+<section id="trabajos" class="max-w-6xl mx-auto px-6 py-20 sm:py-24">
+  <h2 class="font-display text-3xl sm:text-4xl text-tinta text-center mb-10 sm:mb-14">
+    {sitio.trabajosTitulo}
+  </h2>
+
+  <!-- Bento asimétrico: el destacado ocupa 2x2; degrada a 2 col (tablet) y 1 col (móvil). -->
+  <div class="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2 md:auto-rows-[14rem] lg:grid-cols-3 lg:auto-rows-[15rem]">
+    {piezas.map((p) => (
+      <PiezaTrabajo pieza={p} clase={p.destacado ? 'md:col-span-2 md:row-span-2' : ''} />
+    ))}
+  </div>
+</section>

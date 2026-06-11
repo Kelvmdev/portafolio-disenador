@@ -1,61 +1,82 @@
 ---
-// Visor de imágenes a pantalla completa.
-// Se abre al hacer clic en cualquier elemento con [data-galeria],
-// leyendo sus fotos del atributo data-fotos (un JSON con la lista de URLs).
+// Visor de imágenes a pantalla completa, sobre <dialog> nativo + showModal().
+// El modal nativo da GRATIS: fondo inerte (top-layer), focus-trap, Esc, y que el
+// clic en el backdrop no se propague a la página. Se abre al hacer clic en
+// cualquier [data-galeria], leyendo data-fotos (JSON) y data-nombre.
 ---
 
-<div
+<dialog
   id="lightbox"
-  class="fixed inset-0 z-50 hidden items-center justify-center bg-black/90 p-4"
+  aria-label="Galería"
+  class="m-0 h-full max-h-none w-full max-w-none border-0 bg-[#000000e6] p-0 backdrop:bg-[#000000e6]"
 >
-  <button data-cerrar aria-label="Cerrar"
-    class="absolute top-4 right-4 text-white text-4xl leading-none hover:opacity-70">&times;</button>
+  <div data-fondo class="relative flex h-full w-full items-center justify-center p-4">
+    <button data-cerrar aria-label="Cerrar galería"
+      class="absolute top-4 right-4 text-white text-4xl leading-none hover:opacity-70">&times;</button>
 
-  <button data-prev aria-label="Anterior"
-    class="absolute left-4 text-white text-5xl leading-none hover:opacity-70">&#8249;</button>
+    <button data-prev aria-label="Imagen anterior"
+      class="absolute left-4 text-white text-5xl leading-none hover:opacity-70">&#8249;</button>
 
-  <img data-img src="" alt="Imagen ampliada"
-    class="max-h-[90vh] max-w-[90vw] object-contain rounded-lg" />
+    <img data-img src="" alt=""
+      class="max-h-[90vh] max-w-[90vw] object-contain rounded-lg" />
 
-  <button data-next aria-label="Siguiente"
-    class="absolute right-4 text-white text-5xl leading-none hover:opacity-70">&#8250;</button>
+    <button data-next aria-label="Imagen siguiente"
+      class="absolute right-4 text-white text-5xl leading-none hover:opacity-70">&#8250;</button>
 
-  <span data-contador
-    class="absolute bottom-4 text-white text-sm bg-black/50 px-3 py-1 rounded-full"></span>
-</div>
+    <span data-contador
+      class="absolute bottom-4 text-white text-sm bg-[#00000080] px-3 py-1 rounded-full"></span>
+  </div>
+</dialog>
 
 <script>
-  const lightbox = document.getElementById('lightbox')!;
+  const lightbox = document.getElementById('lightbox') as HTMLDialogElement;
+  const fondo = lightbox.querySelector('[data-fondo]') as HTMLElement;
   const imgEl = lightbox.querySelector('[data-img]') as HTMLImageElement;
   const contador = lightbox.querySelector('[data-contador]')!;
+  const btnCerrar = lightbox.querySelector('[data-cerrar]') as HTMLButtonElement;
+  const btnPrev = lightbox.querySelector('[data-prev]') as HTMLButtonElement;
+  const btnNext = lightbox.querySelector('[data-next]') as HTMLButtonElement;
 
   let fotos: string[] = [];
   let indice = 0;
+  let nombre = 'Galería';
+  let disparador: HTMLElement | null = null;
 
   function mostrar() {
     imgEl.src = fotos[indice];
+    imgEl.alt = `${nombre} — imagen ${indice + 1} de ${fotos.length}`;
     contador.textContent = `${indice + 1} / ${fotos.length}`;
   }
 
-  function abrir(lista: string[], inicio = 0) {
+  function abrir(lista: string[], inicio: number, nombreTrabajo: string, origen: HTMLElement | null) {
     fotos = lista;
     indice = inicio;
+    nombre = nombreTrabajo || 'Galería';
+    disparador = origen;
+    lightbox.setAttribute('aria-label', `Galería: ${nombre}`);
     mostrar();
-    lightbox.classList.remove('hidden');
-    lightbox.classList.add('flex');
+    if (!lightbox.open) lightbox.showModal(); // top-layer: el resto queda inerte
+    document.documentElement.style.overflow = 'hidden'; // bloquear scroll de fondo
+    btnCerrar.focus(); // foco al visor
   }
 
   function cerrar() {
-    lightbox.classList.add('hidden');
-    lightbox.classList.remove('flex');
+    if (lightbox.open) lightbox.close(); // dispara el evento 'close'
   }
+
+  // Limpieza al cerrar (también cuando Esc cierra el dialog de forma nativa).
+  lightbox.addEventListener('close', () => {
+    document.documentElement.style.overflow = '';
+    disparador?.focus(); // restaurar el foco al disparador
+    disparador = null;
+  });
 
   // El % (módulo) hace que al pasar la última vuelva a la primera, y viceversa.
   function siguiente() { indice = (indice + 1) % fotos.length; mostrar(); }
   function anterior() { indice = (indice - 1 + fotos.length) % fotos.length; mostrar(); }
 
   // Cada tarjeta con data-galeria abre el visor con sus fotos.
-  document.querySelectorAll('[data-galeria]').forEach((el) => {
+  document.querySelectorAll<HTMLElement>('[data-galeria]').forEach((el) => {
     el.addEventListener('click', (e) => {
       try {
         const lista = JSON.parse(el.getAttribute('data-fotos') ?? '[]') as string[];
@@ -63,23 +84,22 @@
         const target = e.target as HTMLElement;
         const attr = target.getAttribute('data-indice');
         const inicio = attr !== null ? parseInt(attr, 10) : 0;
-        abrir(lista, inicio);
+        abrir(lista, inicio, el.getAttribute('data-nombre') ?? 'Galería', el);
       } catch { /* nada */ }
     });
   });
 
-  lightbox.querySelector('[data-cerrar]')!.addEventListener('click', cerrar);
-  lightbox.querySelector('[data-next]')!.addEventListener('click', siguiente);
-  lightbox.querySelector('[data-prev]')!.addEventListener('click', anterior);
+  btnCerrar.addEventListener('click', cerrar);
+  btnNext.addEventListener('click', siguiente);
+  btnPrev.addEventListener('click', anterior);
 
-  // Clic en el fondo negro (no en la imagen) cierra.
-  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) cerrar(); });
+  // Clic en la zona oscura (no en la imagen ni botones) cierra. Al ser modal,
+  // el clic no llega a la página de atrás.
+  fondo.addEventListener('click', (e) => { if (e.target === fondo) cerrar(); });
 
-  // Teclado: Esc cierra, flechas navegan.
-  document.addEventListener('keydown', (e) => {
-    if (lightbox.classList.contains('hidden')) return;
-    if (e.key === 'Escape') cerrar();
-    if (e.key === 'ArrowRight') siguiente();
-    if (e.key === 'ArrowLeft') anterior();
+  // Flechas navegan (Esc y el focus-trap los maneja el <dialog> nativo).
+  lightbox.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') { e.preventDefault(); siguiente(); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); anterior(); }
   });
 </script>
