@@ -81,7 +81,7 @@
       "categoria": "Post · Instagram",
       "engagement": "2.4k",
       "orden": 1,
-      "destacado": true,
+      "destacado": false,
       "imagen": "https://res.cloudinary.com/dw26ujhoo/image/upload/v1781210753/ajqh8xk8yyjjb5cpgy9l.jpg",
       "galeria": [
         "https://res.cloudinary.com/dw26ujhoo/image/upload/v1781210943/m5ie0b5ysaoyvhqwq9x8.jpg",
@@ -104,7 +104,7 @@
       "categoria": "Historia · Instagram",
       "engagement": "1.1k",
       "orden": 3,
-      "destacado": false,
+      "destacado": true,
       "imagen": "",
       "galeria": [
         "https://res.cloudinary.com/dw26ujhoo/image/upload/v1781210789/pk4vk7u7y8cbfwww6udj.jpg"
