@@ -2,10 +2,23 @@
   "sitio": {
     "nombre": "Laura Gómez",
     "tagline": "Diseño gráfico para redes sociales",
+    "kicker": "Diseñadora de contenido · Medellín",
+    "titular": {
+      "antes": "Diseño que la gente ",
+      "destacado": "guarda",
+      "despues": ", no que pasa de largo."
+    },
+    "subtitulo": "Posts, identidad de marca y campañas que se sienten hechas a mano.",
+    "metricas": [
+      { "numero": 48, "prefijo": "+", "sufijo": "", "decimales": 0, "etiqueta": "marcas" },
+      { "numero": 3.2, "prefijo": "", "sufijo": "M", "decimales": 1, "etiqueta": "de alcance" },
+      { "numero": 120, "prefijo": "", "sufijo": "+", "decimales": 0, "etiqueta": "piezas" },
+      { "numero": 98, "prefijo": "", "sufijo": "%", "decimales": 0, "etiqueta": "de clientes repiten" }
+    ],
     "redes": {
-      "instagram": "#",
-      "behance": "#",
-      "email": "correo@ejemplo.com"
+      "instagram": "https://instagram.com/laura.disena",
+      "behance": "https://behance.net/lauragomez",
+      "email": "hola@lauragomez.studio"
     }
   },
   "trabajos": [

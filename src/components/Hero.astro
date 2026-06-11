@@ -1,0 +1,96 @@
+---
+import { sitio, metricas, type Metrica } from '../config';
+import Boton from './Boton.astro';
+
+// Valor final ya formateado (sirve sin JS y para lectores de pantalla).
+const formato = (m: Metrica) =>
+  `${m.prefijo ?? ''}${m.numero.toFixed(m.decimales ?? 0)}${m.sufijo ?? ''}`;
+---
+
+<section class="px-6 py-20 sm:py-28 lg:py-32">
+  <div class="max-w-4xl mx-auto text-center">
+    <p class="text-xs sm:text-sm font-medium uppercase tracking-[0.2em] text-coral-deep">
+      {sitio.kicker}
+    </p>
+
+    <h1 class="mt-5 font-display text-5xl sm:text-6xl lg:text-7xl leading-[1.05] text-tinta text-balance">
+      {sitio.titular.antes}<em class="italic text-coral-deep">{sitio.titular.destacado}</em>{sitio.titular.despues}
+    </h1>
+
+    <p class="mt-6 max-w-2xl mx-auto text-lg sm:text-xl text-tinta-suave">
+      {sitio.subtitulo}
+    </p>
+
+    <div class="mt-9 flex flex-col sm:flex-row gap-3 justify-center">
+      <Boton href="#trabajos" variante="primario">Ver trabajos</Boton>
+      <Boton href="#contacto" variante="secundario">Hablemos</Boton>
+    </div>
+  </div>
+
+  <!-- La firma: métricas que cuentan solas -->
+  <dl class="max-w-4xl mx-auto mt-16 sm:mt-20 grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
+    {metricas.map((m) => (
+      <div class="text-center">
+        <dd
+          class="font-display text-4xl sm:text-5xl text-tinta tabular-nums"
+          data-metrica
+          data-numero={String(m.numero)}
+          data-prefijo={m.prefijo ?? ''}
+          data-sufijo={m.sufijo ?? ''}
+          data-decimales={String(m.decimales ?? 0)}
+        >
+          <span data-num aria-hidden="true">{formato(m)}</span>
+          <span class="sr-only">{formato(m)}</span>
+        </dd>
+        <dt class="mt-1 text-sm text-tinta-suave">{m.etiqueta}</dt>
+      </div>
+    ))}
+  </dl>
+</section>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const metricas = document.querySelectorAll<HTMLElement>('[data-metrica]');
+
+  function animar(el: HTMLElement) {
+    const numero = parseFloat(el.dataset.numero ?? '0');
+    const prefijo = el.dataset.prefijo ?? '';
+    const sufijo = el.dataset.sufijo ?? '';
+    const decimales = parseInt(el.dataset.decimales ?? '0', 10);
+    const salida = el.querySelector<HTMLElement>('[data-num]');
+    if (!salida) return;
+
+    const duracion = 1400;
+    let inicio: number | null = null;
+
+    function paso(ahora: number) {
+      if (inicio === null) inicio = ahora;
+      const t = Math.min((ahora - inicio) / duracion, 1);
+      const eased = 1 - Math.pow(1 - t, 3); // easeOutCubic
+      const valor = numero * eased;
+      salida!.textContent = `${prefijo}${valor.toFixed(decimales)}${sufijo}`;
+      if (t < 1) {
+        requestAnimationFrame(paso);
+      } else {
+        salida!.textContent = `${prefijo}${numero.toFixed(decimales)}${sufijo}`;
+      }
+    }
+    requestAnimationFrame(paso);
+  }
+
+  // Sin animación si el usuario lo pidió: el valor final ya está en el DOM.
+  if (!reduce && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      (entradas) => {
+        entradas.forEach((e) => {
+          if (e.isIntersecting) {
+            animar(e.target as HTMLElement);
+            io.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.4 }
+    );
+    metricas.forEach((el) => io.observe(el));
+  }
+</script>
