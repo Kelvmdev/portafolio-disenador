@@ -1,15 +1,15 @@
 ---
 import { sitio, servicios } from '../config';
+import Seccion from './Seccion.astro';
+import TituloSeccion from './TituloSeccion.astro';
 import TarjetaServicio from './TarjetaServicio.astro';
 ---
 
-<section id="servicios" class="max-w-6xl mx-auto px-6 py-20 sm:py-24">
-  <h2 class="font-display text-3xl sm:text-4xl text-tinta text-center mb-10 sm:mb-14">
-    {sitio.serviciosTitulo}
-  </h2>
+<Seccion id="servicios">
+  <TituloSeccion titulo={sitio.serviciosTitulo} centrado class="mb-10 sm:mb-14" />
 
   <!-- 1 col móvil · 2x2 tablet · 4 col desktop -->
   <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
     {servicios.map((s, i) => <TarjetaServicio servicio={s} indice={i} />)}
   </div>
-</section>
+</Seccion>

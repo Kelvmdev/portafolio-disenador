@@ -1,14 +1,21 @@
-// Genera public/og.png (1200×630) y public/apple-touch-icon.png (180×180)
-// de marca, usando la paleta del sitio. Ejecuta: node scripts/generar-og.mjs
+// Genera, leyendo el data.json actual:
+//   public/og.png            (1200×630, tarjeta de marca)
+//   public/apple-touch-icon.png (180×180)
+//   public/favicon.svg       (marca coral)
+//   public/favicon.ico       (16/32/48, marca coral)
+// Se ejecuta en cada build (prebuild) → el OG nunca se desfasa del CMS.
 import sharp from 'sharp';
-import { readFileSync } from 'node:fs';
+import pngToIco from 'png-to-ico';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
-const data = JSON.parse(readFileSync(new URL('../src/data.json', import.meta.url)));
+const ruta = (rel) => fileURLToPath(new URL(rel, import.meta.url));
+const data = JSON.parse(readFileSync(ruta('../src/data.json')));
 const { nombre, tagline, kicker } = data.sitio;
 
 const esc = (s) =>
   String(s ?? '')
-    .normalize('NFC') // precompone acentos (ó combinante → ó) para que el render no los pierda
+    .normalize('NFC') // precompone acentos para que el render no los pierda
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
@@ -35,14 +42,24 @@ const og = `<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://
   )}</text>
 </svg>`;
 
-const icono = `<svg width="180" height="180" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+const appleIcon = `<svg width="180" height="180" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
   <rect width="180" height="180" fill="${coralDeep}"/>
   <text x="90" y="128" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="116" font-weight="700" fill="${hueso}">L</text>
 </svg>`;
 
-await sharp(Buffer.from(og)).png().toFile(new URL('../public/og.png', import.meta.url).pathname.slice(1));
-await sharp(Buffer.from(icono))
-  .png()
-  .toFile(new URL('../public/apple-touch-icon.png', import.meta.url).pathname.slice(1));
+// Favicon de marca (cuadrado redondeado coral + inicial)
+const faviconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect width="100" height="100" rx="22" fill="${coralDeep}"/>
+  <text x="50" y="73" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="68" font-weight="700" fill="${hueso}">L</text>
+</svg>`;
 
-console.log('OK: public/og.png (1200x630) y public/apple-touch-icon.png (180x180)');
+await sharp(Buffer.from(og)).png().toFile(ruta('../public/og.png'));
+await sharp(Buffer.from(appleIcon)).png().toFile(ruta('../public/apple-touch-icon.png'));
+
+writeFileSync(ruta('../public/favicon.svg'), faviconSvg);
+
+const png = (size) => sharp(Buffer.from(faviconSvg)).resize(size, size).png().toBuffer();
+const ico = await pngToIco([await png(16), await png(32), await png(48)]);
+writeFileSync(ruta('../public/favicon.ico'), ico);
+
+console.log('OK: og.png, apple-touch-icon.png, favicon.svg, favicon.ico (marca coral)');

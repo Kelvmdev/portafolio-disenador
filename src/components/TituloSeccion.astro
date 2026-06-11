@@ -1,0 +1,19 @@
+---
+// Título de sección (h2) reutilizable.
+interface Props {
+  titulo: string;
+  centrado?: boolean;
+  class?: string;
+}
+const { titulo, centrado = false, class: clase = '' } = Astro.props;
+---
+
+<h2
+  class:list={[
+    'font-display text-3xl sm:text-4xl text-tinta',
+    centrado && 'text-center',
+    clase,
+  ]}
+>
+  {titulo}
+</h2>

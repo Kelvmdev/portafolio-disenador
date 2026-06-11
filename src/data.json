@@ -2,6 +2,11 @@
   "sitio": {
     "nombre": "Laura Gómez",
     "tagline": "Diseño gráfico para redes sociales",
+    "rol": "Diseñadora gráfica de contenido para redes sociales",
+    "seo": {
+      "title": "Laura Gómez — Diseño gráfico para redes sociales",
+      "description": "Laura Gómez, diseñadora de contenido para redes en Medellín. Posts, identidad de marca, reels y campañas que detienen el scroll. Hablemos."
+    },
     "kicker": "Diseñadora de contenido · Medellín",
     "titular": {
       "antes": "Diseño que la gente ",
@@ -59,7 +64,7 @@
   },
   "servicios": [
     {
-      "titulo": "Contenido para Instagran",
+      "titulo": "Contenido para Instagram",
       "descripcion": "Posts, carruseles e historias con identidad consistente."
     },
     {
@@ -88,7 +93,7 @@
       ]
     },
     {
-      "titulo": "Campaña Luna Tibiá",
+      "titulo": "Campaña Luna Tibia",
       "categoria": "Post · Instagram",
       "engagement": "2.4k",
       "orden": 2,

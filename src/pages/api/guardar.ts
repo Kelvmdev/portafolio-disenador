@@ -51,6 +51,7 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
       ...remoto.sitio,
       ...ps,
       titular: { ...remoto.sitio?.titular, ...ps.titular },
+      seo: { ...remoto.sitio?.seo, ...ps.seo },
       sobre: { ...remoto.sitio?.sobre, ...ps.sobre },
       contacto: { ...remoto.sitio?.contacto, ...ps.contacto },
       redes: { ...remoto.sitio?.redes, ...ps.redes },

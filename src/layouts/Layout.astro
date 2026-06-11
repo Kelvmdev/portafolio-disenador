@@ -4,8 +4,7 @@ import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
 import { sitio } from '../config';
 
-const { titulo = sitio.nombre } = Astro.props;
-const descripcion = `Portafolio de ${sitio.nombre} — ${sitio.tagline}.`;
+const { titulo = sitio.seo.title, descripcion = sitio.seo.description } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const imagenOG = new URL('/og.png', Astro.site).href;
 const ogAlt = `${sitio.nombre} — ${sitio.tagline}`;
@@ -17,6 +16,7 @@ const ogAlt = `${sitio.nombre} — ${sitio.tagline}`;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#c5371a" />
     <meta name="generator" content={Astro.generator} />
 
     <title>{titulo}</title>

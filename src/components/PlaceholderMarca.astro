@@ -1,0 +1,14 @@
+---
+// Bloque de marca para cuando falta una imagen (foto de Sobre, portada de pieza).
+// Fondo de la paleta + texto opcional en font-display. Reemplaza a placehold.co.
+interface Props {
+  texto?: string;
+  estilo?: string; // clases de fondo + color de texto
+  class?: string; // tamaño/forma
+}
+const { texto, estilo = 'bg-coral text-tinta', class: clase = '' } = Astro.props;
+---
+
+<div class:list={['flex items-center justify-center', estilo, clase]}>
+  {texto && <p class="font-display text-2xl sm:text-3xl text-center leading-tight px-6">{texto}</p>}
+</div>

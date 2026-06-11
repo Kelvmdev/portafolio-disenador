@@ -1,6 +1,7 @@
 ---
 import { imagenOptimizada } from '../lib/img';
 import type { Pieza } from '../config';
+import PlaceholderMarca from './PlaceholderMarca.astro';
 
 interface Props {
   pieza: Pieza;
@@ -16,7 +17,7 @@ const interactiva = fotos.length > 0;
 // La imagen grande del lightbox va optimizada a un ancho mayor (~1200).
 const fotosLightbox = fotos.map((u) => imagenOptimizada(u, 1200));
 
-// Placeholder de marca (TEMPORAL — se reemplaza por la URL real desde el CMS, Tanda 5).
+// Estilo del placeholder de marca (TEMPORAL — se reemplaza por la URL real desde el CMS).
 const estilos = [
   'bg-coral text-tinta',
   'bg-tinta text-hueso',
@@ -37,7 +38,7 @@ const attrs = interactiva
       'data-galeria': true,
       'data-fotos': JSON.stringify(fotosLightbox),
       'data-nombre': pieza.titulo,
-      'aria-label': `Ver galería: ${pieza.titulo} (${fotos.length} ${fotos.length === 1 ? 'imagen' : 'imágenes'})`,
+      'aria-label': `Ver galería: ${pieza.titulo} — ${pieza.categoria}, ${pieza.engagement} me gusta (${fotos.length} ${fotos.length === 1 ? 'imagen' : 'imágenes'})`,
     }
   : {};
 ---
@@ -52,17 +53,18 @@ const attrs = interactiva
       class="absolute inset-0 h-full w-full object-cover"
     />
   ) : (
-    <div class={`absolute inset-0 flex items-center justify-center p-6 ${estiloPlaceholder}`}>
-      <p class="font-display text-2xl sm:text-3xl text-center leading-tight">{pieza.titulo}</p>
-    </div>
+    <PlaceholderMarca estilo={estiloPlaceholder} class="absolute inset-0" />
   )}
 
-  <!-- Overlay "publicación": categoría + engagement. Scrim fuerte + text-shadow
+  <!-- Overlay "publicación": título + categoría + engagement. Scrim fuerte + text-shadow
        para garantizar AA del texto blanco sobre CUALQUIER imagen (clara u oscura). -->
-  <div class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 bg-gradient-to-t from-[#000000e6] via-[#0000008c] to-transparent p-3 pt-14 sm:p-4 sm:pt-16 [text-shadow:0_1px_3px_rgba(0,0,0,0.85)]">
-    <span class="text-xs sm:text-sm font-semibold text-white">{pieza.categoria}</span>
-    <span class="whitespace-nowrap text-xs sm:text-sm font-semibold text-white">
-      <span aria-hidden="true" class="text-coral">♥</span> {pieza.engagement}
-    </span>
+  <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#000000e6] via-[#0000008c] to-transparent p-3 pt-14 sm:p-4 sm:pt-16 [text-shadow:0_1px_3px_rgba(0,0,0,0.85)]">
+    <h3 class="font-display text-lg sm:text-xl text-white leading-tight">{pieza.titulo}</h3>
+    <div class="mt-1 flex items-end justify-between gap-2">
+      <span class="text-xs sm:text-sm font-medium text-white">{pieza.categoria}</span>
+      <span class="whitespace-nowrap text-xs sm:text-sm font-medium text-white">
+        <span aria-hidden="true" class="text-coral">♥</span> {pieza.engagement}
+      </span>
+    </div>
   </div>
 </Tag>

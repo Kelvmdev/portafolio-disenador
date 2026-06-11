@@ -4,13 +4,13 @@ import { sitio } from '../config';
 // Año dinámico (no "2026" literal) — se calcula en el build.
 const anio = new Date().getFullYear();
 
-// Placeholders por ahora; los reales se cablean en la Tanda 1.
 const redes = [
-  { nombre: 'Instagram', href: sitio.redes?.instagram ?? '#' },
-  { nombre: 'Behance', href: sitio.redes?.behance ?? '#' },
+  { nombre: 'Instagram', href: sitio.redes?.instagram ?? '#', externo: true },
+  { nombre: 'Behance', href: sitio.redes?.behance ?? '#', externo: true },
   {
     nombre: 'Email',
     href: sitio.redes?.email ? `mailto:${sitio.redes.email}` : '#',
+    externo: false,
   },
 ];
 ---
@@ -22,7 +22,14 @@ const redes = [
 
     <div class="mt-8 flex justify-center gap-6">
       {redes.map((r) => (
-        <a href={r.href} class="text-crema transition hover:text-coral">{r.nombre}</a>
+        <a
+          href={r.href}
+          target={r.externo ? '_blank' : undefined}
+          rel={r.externo ? 'noopener noreferrer' : undefined}
+          class="text-crema transition hover:text-coral"
+        >
+          {r.nombre}
+        </a>
       ))}
     </div>
 
@@ -30,7 +37,7 @@ const redes = [
       © {anio} {sitio.nombre}. Todos los derechos reservados.
     </p>
     <p class="mt-2 text-xs text-crema">
-      Sitio por <a href="https://mi-portafolio-eta-hazel.vercel.app/" target="_blank" rel="noopener" class="text-coral hover:underline">Kervin Martínez</a>
+      Sitio por <a href="https://mi-portafolio-eta-hazel.vercel.app/" target="_blank" rel="noopener noreferrer" class="text-coral hover:underline">Kervin Martínez</a>
     </p>
   </div>
 </footer>

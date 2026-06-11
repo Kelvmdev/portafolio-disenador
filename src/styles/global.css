@@ -17,6 +17,7 @@
   --color-linea: #e7dfd0;        /* bordes / divisores */
   --color-coral: #ff5a3c;        /* ACENTO brillante → fondos, decor, iconos */
   --color-coral-deep: #c5371a;   /* ACENTO para TEXTO/enlaces (pasa AA) */
+  --color-error: #a32d13;        /* texto de error (AA sobre hueso y crema) */
 }
 
 /* Fuentes como tokens → utilidades font-display / font-body */
@@ -36,10 +37,13 @@ html {
   scroll-padding-top: 5rem; /* alto del nav sticky */
 }
 
-/* Foco de teclado visible y global (anillo coral-deep, AA) */
+/* Foco de teclado visible y global. Doble anillo: outline coral-deep (visible
+   sobre fondos claros) + halo hueso pegado al elemento (visible sobre el footer
+   oscuro). Así el foco se ve con buen contraste en cualquier fondo. */
 :where(a, button, input, textarea, select):focus-visible {
   outline: 2px solid var(--color-coral-deep);
   outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--color-hueso);
   border-radius: 0.25rem;
 }
 

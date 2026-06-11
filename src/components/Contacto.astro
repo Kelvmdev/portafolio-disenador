@@ -1,35 +1,39 @@
 ---
 import { sitio } from '../config';
 import Boton from './Boton.astro';
+import Seccion from './Seccion.astro';
+import TituloSeccion from './TituloSeccion.astro';
 
 const { contacto, redes, formspree } = sitio;
 // Normaliza el endpoint (el JSON guarda "formspree.io/f/XXXX").
 const endpoint = formspree.startsWith('http') ? formspree : `https://${formspree}`;
 
 const campoClase =
-  'w-full rounded-lg border border-linea bg-hueso px-4 py-3 text-tinta placeholder:text-tenue';
+  'w-full rounded-lg border border-linea bg-hueso px-4 py-3 text-tinta placeholder:text-tinta-suave';
 const labelClase = 'block text-sm font-medium text-tinta mb-1';
 ---
 
-<section id="contacto" class="max-w-6xl mx-auto px-6 py-20 sm:py-24">
+<Seccion id="contacto">
   <div class="grid gap-10 md:grid-cols-2 lg:gap-16">
     <!-- Izquierda: título + texto + contactos (del JSON) -->
     <div>
-      <h2 class="font-display text-3xl sm:text-4xl text-tinta">{contacto.titulo}</h2>
+      <TituloSeccion titulo={contacto.titulo} />
       <p class="mt-5 max-w-md text-lg leading-relaxed text-tinta-suave">{contacto.texto}</p>
 
       <div class="mt-8 space-y-3">
         <a href={`mailto:${redes.email}`} class="block text-coral-deep hover:underline">{redes.email}</a>
         <div class="flex gap-5">
-          <a href={redes.instagram} class="text-coral-deep hover:underline">Instagram</a>
-          <a href={redes.behance} class="text-coral-deep hover:underline">Behance</a>
+          <a href={redes.instagram} target="_blank" rel="noopener noreferrer" class="text-coral-deep hover:underline">Instagram</a>
+          <a href={redes.behance} target="_blank" rel="noopener noreferrer" class="text-coral-deep hover:underline">Behance</a>
         </div>
       </div>
     </div>
 
-    <!-- Derecha: formulario -->
+    <!-- Derecha: formulario. action+method = degradación sin JS (Formspree acepta POST). -->
     <form
       id="form-contacto"
+      action={endpoint}
+      method="POST"
       data-endpoint={endpoint}
       class="rounded-2xl border border-linea bg-crema p-6 sm:p-8"
       novalidate
@@ -65,7 +69,7 @@ const labelClase = 'block text-sm font-medium text-tinta mb-1';
       <p data-status role="status" aria-live="polite" class="mt-3 min-h-5 text-sm"></p>
     </form>
   </div>
-</section>
+</Seccion>
 
 <script>
   const form = document.getElementById('form-contacto') as HTMLFormElement | null;
@@ -84,7 +88,7 @@ const labelClase = 'block text-sm font-medium text-tinta mb-1';
       spinner.hidden = !enviando;
       label.textContent = enviando ? 'Enviando…' : modo === 'exito' ? 'Enviado' : 'Enviar mensaje';
       status.textContent = mensaje;
-      status.className = `mt-3 min-h-5 text-sm ${modo === 'error' ? 'text-coral-deep' : 'text-tinta-suave'}`;
+      status.className = `mt-3 min-h-5 text-sm ${modo === 'error' ? 'text-error' : 'text-tinta-suave'}`;
     }
 
     form.addEventListener('submit', async (e) => {

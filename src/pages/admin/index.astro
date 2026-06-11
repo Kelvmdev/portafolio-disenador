@@ -35,7 +35,7 @@ const estadoInicial = JSON.stringify(datos).replace(/</g, '\\u003c');
         <p class="text-tinta-suave text-sm mb-6">Edita todo el sitio y pulsa “Guardar todo”.</p>
 
         {guardado && <p class="mb-6 rounded-lg bg-crema border border-linea px-3 py-2 text-sm text-tinta">✅ Guardado. Vercel redesplegará en ~30 s (recarga con Ctrl+Shift+R).</p>}
-        {errorGuardar && <p class="mb-6 rounded-lg border border-coral-deep px-3 py-2 text-sm text-coral-deep">⚠️ No se pudo guardar. Revisa tu conexión e intenta de nuevo.</p>}
+        {errorGuardar && <p class="mb-6 rounded-lg border border-error px-3 py-2 text-sm text-error">⚠️ No se pudo guardar. Revisa tu conexión e intenta de nuevo.</p>}
 
         <form method="POST" action="/api/guardar">
           <input type="hidden" name="payload" id="payload" />
@@ -58,6 +58,22 @@ const estadoInicial = JSON.stringify(datos).replace(/</g, '\\u003c');
               <div>
                 <label for="f-kicker" class={lbl}>Kicker (sobre el titular)</label>
                 <input id="f-kicker" data-path="sitio.kicker" value={s.kicker} autocomplete="off" class={inp} />
+              </div>
+              <div>
+                <label for="f-rol" class={lbl}>Rol (para el SEO / JSON-LD)</label>
+                <input id="f-rol" data-path="sitio.rol" value={s.rol} autocomplete="off" class={inp} />
+              </div>
+            </fieldset>
+
+            <fieldset class={card}>
+              <legend class={leyenda}>SEO (título y descripción de Google/redes)</legend>
+              <div>
+                <label for="f-seo-title" class={lbl}>Título (~50-60 caracteres)</label>
+                <input id="f-seo-title" data-path="sitio.seo.title" value={s.seo.title} autocomplete="off" class={inp} />
+              </div>
+              <div>
+                <label for="f-seo-desc" class={lbl}>Descripción (~120-160 caracteres)</label>
+                <textarea id="f-seo-desc" data-path="sitio.seo.description" rows="3" autocomplete="off" class={inp}>{s.seo.description}</textarea>
               </div>
             </fieldset>
 
@@ -202,7 +218,7 @@ const estadoInicial = JSON.stringify(datos).replace(/</g, '\\u003c');
         <form method="POST" action="/api/login" autocomplete="on" class="w-full max-w-sm rounded-2xl border border-linea bg-crema p-8">
           <h1 class="font-display text-3xl text-tinta mb-1">Panel</h1>
           <p class="text-tinta-suave text-sm mb-6">Ingresa tu clave para entrar.</p>
-          {error && <p class="mb-4 rounded-lg border border-coral-deep px-3 py-2 text-sm text-coral-deep">Clave incorrecta. Intenta de nuevo.</p>}
+          {error && <p class="mb-4 rounded-lg border border-error px-3 py-2 text-sm text-error">Clave incorrecta. Intenta de nuevo.</p>}
           <label for="password" class={lbl}>Clave</label>
           <input id="password" name="password" type="password" required autocomplete="current-password" placeholder="Tu clave" class={`${inp} mb-4`} />
           <button type="submit" class="w-full rounded-full bg-coral-deep px-6 py-3 font-medium text-hueso motion-safe:transition motion-safe:duration-150 active:scale-95 hover:shadow-lg">
@@ -280,7 +296,7 @@ const estadoInicial = JSON.stringify(datos).replace(/</g, '\\u003c');
           return `
           <div class="rounded-xl border border-linea bg-hueso p-4 space-y-3">
             <div class="flex items-center justify-between">
-              <p class="text-xs font-semibold uppercase text-tenue">Trabajo ${i + 1}</p>
+              <p class="text-xs font-semibold uppercase text-tinta-suave">Trabajo ${i + 1}</p>
               <div class="flex items-center gap-2">
                 <button type="button" data-mover data-dir="-1" data-i="${i}" aria-label="Subir" class="text-tinta-suave hover:text-tinta">↑</button>
                 <button type="button" data-mover data-dir="1" data-i="${i}" aria-label="Bajar" class="text-tinta-suave hover:text-tinta">↓</button>
@@ -377,7 +393,7 @@ const estadoInicial = JSON.stringify(datos).replace(/</g, '\\u003c');
           return `
           <div class="rounded-xl border border-linea bg-hueso p-4 space-y-3">
             <div class="flex items-center justify-between">
-              <p class="text-xs font-semibold uppercase text-tenue">Servicio ${i + 1}</p>
+              <p class="text-xs font-semibold uppercase text-tinta-suave">Servicio ${i + 1}</p>
               <button type="button" data-borrar-serv data-i="${i}" class="text-sm text-coral-deep hover:underline">Borrar</button>
             </div>
             <label class="block text-sm text-tinta-suave">Título

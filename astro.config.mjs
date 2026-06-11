@@ -12,6 +12,10 @@ export default defineConfig({
   // URLs absolutas para OG/canonical/sitemap (sin esto la tarjeta no carga al compartir).
   site: 'https://portafolio-disenador.vercel.app',
 
+  // URLs sin barra final consistentes (home y /gracias igual).
+  trailingSlash: 'never',
+  build: { format: 'file' },
+
   integrations: [
     sitemap({
       // No indexar el panel ni la página de gracias.

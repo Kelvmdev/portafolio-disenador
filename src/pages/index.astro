@@ -12,7 +12,7 @@ const personLd = {
   '@context': 'https://schema.org',
   '@type': 'Person',
   name: sitio.nombre,
-  jobTitle: 'Diseñadora gráfica de contenido para redes sociales',
+  jobTitle: sitio.rol,
   url: new URL('/', Astro.site).href,
   image: new URL('/og.png', Astro.site).href,
   email: sitio.redes.email,
@@ -21,7 +21,7 @@ const personLd = {
 const personLdJson = JSON.stringify(personLd).replace(/</g, '\\u003c');
 ---
 
-<Layout titulo={sitio.nombre}>
+<Layout>
   <script type="application/ld+json" slot="head" is:inline set:html={personLdJson} />
   <Hero />
   <Trabajos />

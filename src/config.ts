@@ -31,7 +31,7 @@ export const metricas = (data.sitio.metricas ?? []) as Metrica[];
 // Servicios (sección de tarjetas).
 export const servicios = (data.servicios ?? []) as Servicio[];
 
-// Piezas del bento, ordenadas.
+// Piezas del bento: la destacada SIEMPRE primera, luego por orden.
 export const piezas: Pieza[] = (data.trabajos as Pieza[])
   .slice()
-  .sort((a, b) => a.orden - b.orden);
+  .sort((a, b) => Number(b.destacado) - Number(a.destacado) || a.orden - b.orden);
