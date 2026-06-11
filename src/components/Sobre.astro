@@ -1,0 +1,37 @@
+---
+import { sitio } from '../config';
+import { imagenOptimizada } from '../lib/img';
+
+const sobre = sitio.sobre;
+const tieneFoto = Boolean(sobre.foto) && sobre.foto.startsWith('http');
+
+// Acota el tamaño del media: max-w + max-h para que la sección no crezca de más.
+const media = 'aspect-[4/5] w-full max-w-[400px] max-h-[500px] mx-auto rounded-2xl';
+---
+
+<section id="sobre" class="max-w-6xl mx-auto px-6 py-20 sm:py-24">
+  <div class="grid items-center gap-10 md:grid-cols-2 lg:gap-16">
+    <!-- Foto / placeholder de marca (TEMPORAL — se reemplaza por la URL real, Tanda 5) -->
+    <div>
+      {tieneFoto ? (
+        <img
+          src={imagenOptimizada(sobre.foto, 800)}
+          alt={`Foto de ${sitio.nombre}`}
+          loading="lazy"
+          decoding="async"
+          class={`${media} object-cover`}
+        />
+      ) : (
+        <div class={`${media} flex items-center justify-center bg-coral p-6`}>
+          <p class="font-display text-3xl sm:text-4xl text-center text-tinta">{sitio.nombre}</p>
+        </div>
+      )}
+    </div>
+
+    <!-- Texto -->
+    <div>
+      <h2 class="font-display text-3xl sm:text-4xl text-tinta">{sitio.sobreTitulo}</h2>
+      <p class="mt-5 text-lg leading-relaxed text-tinta-suave">{sobre.bio}</p>
+    </div>
+  </div>
+</section>

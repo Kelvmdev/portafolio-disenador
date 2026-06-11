@@ -18,10 +18,18 @@ export interface Pieza {
   destacado: boolean;
 }
 
+export interface Servicio {
+  titulo: string;
+  descripcion: string;
+}
+
 export const sitio = data.sitio;
 
 // Métricas del hero (cuentan solas al entrar en viewport).
 export const metricas = (data.sitio.metricas ?? []) as Metrica[];
+
+// Servicios (sección de tarjetas).
+export const servicios = (data.servicios ?? []) as Servicio[];
 
 // Piezas del bento, ordenadas.
 export const piezas: Pieza[] = (data.trabajos as Pieza[])

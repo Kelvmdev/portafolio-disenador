@@ -16,12 +16,24 @@
       { "numero": 98, "prefijo": "", "sufijo": "%", "decimales": 0, "etiqueta": "de clientes repiten" }
     ],
     "trabajosTitulo": "Trabajos seleccionados",
+    "sobreTitulo": "Sobre mí",
+    "sobre": {
+      "bio": "Soy Laura, diseñadora gráfica enfocada en redes sociales. Ayudo a marcas pequeñas y medianas a verse tan bien como lo que ofrecen: posts que detienen el scroll, identidades con personalidad y campañas que se sienten hechas a mano. Trabajo de cerca con cada cliente — entender la marca es la mitad del diseño.",
+      "foto": ""
+    },
+    "serviciosTitulo": "Servicios",
     "redes": {
       "instagram": "https://instagram.com/laura.disena",
       "behance": "https://behance.net/lauragomez",
       "email": "hola@lauragomez.studio"
     }
   },
+  "servicios": [
+    { "titulo": "Contenido para Instagram", "descripcion": "Posts, carruseles e historias con identidad consistente." },
+    { "titulo": "Identidad de marca", "descripcion": "Logo, paleta, tipografía y guía de uso." },
+    { "titulo": "Reels y motion", "descripcion": "Portadas y edición ágil para video corto." },
+    { "titulo": "Campañas y flyers", "descripcion": "Piezas para lanzamientos, promos y eventos." }
+  ],
   "trabajos": [
     {
       "titulo": "Campaña Luna Tibia",

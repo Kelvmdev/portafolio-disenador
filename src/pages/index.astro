@@ -2,6 +2,8 @@
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import Trabajos from '../components/Trabajos.astro';
+import Sobre from '../components/Sobre.astro';
+import Servicios from '../components/Servicios.astro';
 import { sitio } from '../config';
 import Lightbox from '../components/Lightbox.astro';
 ---
@@ -9,5 +11,7 @@ import Lightbox from '../components/Lightbox.astro';
 <Layout titulo={sitio.nombre}>
   <Hero />
   <Trabajos />
+  <Sobre />
+  <Servicios />
   <Lightbox />
 </Layout>
