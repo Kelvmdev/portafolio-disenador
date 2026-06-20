@@ -1,13 +1,13 @@
 {
   "sitio": {
-    "nombre": "Laura Gómez",
+    "nombre": "Eliecer Murillas",
     "tagline": "Diseño gráfico para redes sociales",
-    "rol": "Diseñadora gráfica de contenido para redes sociales",
+    "rol": "Diseñador gráfico en estampados, textil, editorial, publicitario y web.",
     "seo": {
-      "title": "Laura Gómez — Diseño gráfico para redes sociales",
-      "description": "Laura Gómez, diseñadora de contenido para redes en Medellín. Posts, identidad de marca, reels y campañas que detienen el scroll. Hablemos."
+      "title": "Eliecer Murillas — Diseño gráfico",
+      "description": "Eliecer Murillas, diseñador de publicidad, prendas textiles, editorial, ajustando tus ideas al concepto que requieras o necesites."
     },
-    "kicker": "Diseñadora de contenido · Medellín",
+    "kicker": "Diseñador Gràfico · Guàrico",
     "titular": {
       "antes": "Diseño que la gente ",
       "destacado": "guarda",
@@ -47,7 +47,7 @@
     "trabajosTitulo": "Trabajos seleccionados",
     "sobreTitulo": "Sobre mí",
     "sobre": {
-      "bio": "Soy Laura, diseñadora gráfica enfocada en redes sociales. Ayudo a marcas pequeñas y medianas a verse tan bien como lo que ofrecen: posts que detienen el scroll, identidades con personalidad y campañas que se sienten hechas a mano. Trabajo de cerca con cada cliente — entender la marca es la mitad del diseño.",
+      "bio": "",
       "foto": "https://res.cloudinary.com/dw26ujhoo/image/upload/v1781211052/ny12z6v83xl8fhuhjrnu.jpg"
     },
     "serviciosTitulo": "Servicios",
