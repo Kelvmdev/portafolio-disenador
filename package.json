@@ -25,5 +25,11 @@
     "@types/node": "^25.9.1",
     "png-to-ico": "^3.0.1",
     "sharp": "^0.35.1"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp"
+    ]
   }
 }
